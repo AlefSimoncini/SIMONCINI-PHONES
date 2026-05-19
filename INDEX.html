@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simoncini Phones</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#05080f; --sur:#0d1117; --sur2:#131920; --sur3:#161d26;
+  --bdr:#1e2a38; --acc:#00c8ff; --or:#ff6b35; --yl:#ffd60a;
+  --red:#ff4444; --bl:#4fc3f7; --txt:#e8f0fe; --mu:#4a6080;
+  --mono:'Space Mono',monospace; --sans:'Syne',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--txt);font-family:var(--sans);min-height:100vh;padding:20px 16px 60px;}
+body::before{content:'';position:fixed;inset:0;
+  background:radial-gradient(ellipse 80% 50% at 50% -10%,rgba(0,140,255,.18) 0%,transparent 70%),
+             radial-gradient(ellipse 60% 40% at 80% 80%,rgba(0,80,180,.10) 0%,transparent 60%);
+  pointer-events:none;z-index:0;}
+body::after{content:'';position:fixed;inset:0;
+  background-image:linear-gradient(rgba(0,200,255,.03) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(0,200,255,.03) 1px,transparent 1px);
+  background-size:36px 36px;pointer-events:none;z-index:0;}
+
+.wrap{max-width:680px;margin:0 auto;position:relative;z-index:1;}
+
+header{text-align:center;padding:28px 0 20px;margin-bottom:20px;border-bottom:1px solid var(--bdr);position:relative;}
+header::after{content:'';position:absolute;bottom:-1px;left:50%;transform:translateX(-50%);
+  width:80px;height:2px;background:linear-gradient(90deg,transparent,var(--acc),transparent);}
+
+.tag{display:inline-block;font-family:var(--mono);font-size:9px;letter-spacing:4px;color:var(--acc);
+  background:rgba(0,200,255,.07);border:1px solid rgba(0,200,255,.2);
+  padding:3px 10px;border-radius:2px;text-transform:uppercase;margin-top:10px;}
+
+.card{background:var(--sur);border:1px solid var(--bdr);border-radius:10px;overflow:hidden;margin-bottom:14px;}
+.card-head{display:flex;align-items:center;gap:12px;padding:14px 18px;background:var(--sur2);border-bottom:1px solid var(--bdr);}
+.num{width:26px;height:26px;border-radius:50%;background:var(--acc);color:#000a14;
+  font-family:var(--mono);font-size:11px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.card-head h2{font-size:13px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;}
+.card-body{padding:18px;}
+
+.tog-row{display:grid;gap:4px;background:var(--sur3);border:1px solid var(--bdr);border-radius:6px;padding:4px;margin-bottom:12px;}
+.tog-row.two{grid-template-columns:1fr 1fr;}
+.tog-row.three{grid-template-columns:1fr 1fr 1fr;}
+.tbtn{padding:9px 6px;border-radius:4px;border:none;font-family:var(--sans);font-size:12px;font-weight:700;
+  cursor:pointer;transition:all .2s;color:var(--mu);background:transparent;text-align:center;}
+.tbtn:hover{color:var(--txt);}
+.tbtn.on{background:var(--acc);color:#000a14;box-shadow:0 0 14px rgba(0,200,255,.25);}
+.tbtn.on2{background:rgba(0,200,255,.12);border:1px solid rgba(0,200,255,.4);color:var(--acc);}
+
+.brand-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.brand-btn{padding:14px;border-radius:6px;border:1px solid var(--bdr);background:var(--sur3);
+  font-family:var(--sans);font-size:13px;font-weight:700;cursor:pointer;
+  transition:all .2s;color:var(--mu);text-align:center;}
+.brand-btn:hover{border-color:var(--acc);color:var(--txt);}
+.brand-btn.on{background:rgba(0,200,255,.12);border-color:var(--acc);color:var(--acc);}
+
+.field{display:flex;align-items:center;gap:10px;background:var(--sur3);
+  border:1px solid var(--bdr);border-radius:6px;padding:13px 16px;transition:border-color .2s;}
+.field:focus-within{border-color:rgba(0,200,255,.5);}
+.fpre{font-family:var(--mono);font-size:14px;color:var(--mu);flex-shrink:0;}
+.field input{background:transparent;border:none;outline:none;
+  font-family:var(--mono);font-size:22px;font-weight:700;color:var(--acc);width:100%;}
+.field input::placeholder{color:#222;}
+.field input.text-inp{font-family:var(--sans);font-size:16px;font-weight:600;color:var(--txt);}
+
+/* Modelos */
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:7px;}
+.pbtn{background:var(--sur3);border:1px solid var(--bdr);color:var(--mu);
+  font-family:var(--mono);font-size:11px;padding:9px 6px;border-radius:4px;
+  cursor:pointer;transition:all .15s;text-align:center;line-height:1.3;}
+.pbtn:hover{border-color:var(--acc);color:var(--txt);}
+.pbtn.on{background:rgba(0,200,255,.1);border-color:var(--acc);color:var(--acc);font-weight:700;}
+
+/* Memória — pílulas */
+.mem-grid{display:flex;flex-wrap:wrap;gap:8px;}
+.mbtn{background:var(--sur3);border:1px solid var(--bdr);color:var(--mu);
+  font-family:var(--mono);font-size:12px;font-weight:700;
+  padding:9px 20px;border-radius:100px;
+  cursor:pointer;transition:all .15s;}
+.mbtn:hover{border-color:var(--acc);color:var(--txt);}
+.mbtn.on{background:rgba(0,200,255,.15);border-color:var(--acc);color:var(--acc);
+  box-shadow:0 0 12px rgba(0,200,255,.18);}
+
+/* Bateria */
+.bat-row{display:flex;align-items:center;gap:12px;}
+.bat-lbl{font-family:var(--mono);font-size:10px;color:var(--mu);width:80px;flex-shrink:0;}
+input[type=range]{-webkit-appearance:none;flex:1;height:3px;background:var(--bdr);border-radius:2px;outline:none;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--acc);cursor:pointer;}
+.bat-val{font-family:var(--mono);font-size:15px;font-weight:700;width:50px;text-align:right;}
+.bat-note{font-family:var(--mono);font-size:10px;color:var(--mu);margin-top:10px;line-height:1.7;}
+
+/* Condições */
+.ctogrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.ctog{display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:11px 13px;background:var(--sur3);border:1px solid var(--bdr);
+  border-radius:5px;cursor:pointer;transition:all .15s;}
+.ctog:hover{border-color:var(--mu);}
+.ctog.on{border-color:var(--red);background:rgba(255,68,68,.07);}
+.ctog-name{font-size:12px;font-weight:600;}
+.ctog-disc{font-family:var(--mono);font-size:10px;color:var(--mu);margin-top:3px;}
+.sw{width:34px;height:19px;background:var(--bdr);border-radius:10px;position:relative;transition:background .2s;flex-shrink:0;}
+.sw::after{content:'';position:absolute;top:3px;left:3px;width:13px;height:13px;
+  border-radius:50%;background:var(--mu);transition:all .2s;}
+.ctog.on .sw{background:rgba(255,68,68,.3);}
+.ctog.on .sw::after{left:18px;background:var(--red);}
+
+/* Chips parcelas */
+.chips{display:flex;flex-wrap:wrap;gap:7px;}
+.chip{font-family:var(--mono);font-size:12px;font-weight:700;padding:7px 14px;border-radius:20px;
+  border:1px solid var(--bdr);background:var(--sur3);color:var(--mu);cursor:pointer;transition:all .15s;}
+.chip:hover{border-color:var(--acc);color:var(--txt);}
+.chip.on{background:rgba(0,200,255,.12);border-color:var(--acc);color:var(--acc);}
+
+.garmin-note,.info-box{font-family:var(--mono);font-size:11px;color:var(--yl);margin-top:10px;
+  padding:8px 12px;background:rgba(255,214,10,.07);border-radius:4px;border:1px solid rgba(255,214,10,.2);}
+
+/* ══ RESULTADO ══════════════════════════════════════════════════════ */
+.rcard{background:var(--sur);border:1px solid var(--bdr);border-radius:10px;overflow:hidden;}
+.rhead{background:var(--sur2);padding:13px 18px;border-bottom:1px solid var(--bdr);
+  display:flex;align-items:center;justify-content:space-between;}
+.rhead span{font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;}
+.rbody{padding:20px;display:flex;flex-direction:column;gap:12px;}
+.empty{text-align:center;padding:36px 20px;font-family:var(--mono);font-size:11px;color:var(--mu);line-height:2.2;}
+
+/* Resumo interno */
+.summary{background:var(--sur2);border-radius:8px;overflow:hidden;border:1px solid var(--bdr);}
+.sum-title{font-family:var(--mono);font-size:9px;color:var(--acc);letter-spacing:3px;
+  padding:9px 14px;background:rgba(0,200,255,.05);border-bottom:1px solid var(--bdr);}
+.sum-body{padding:13px 14px;display:flex;flex-direction:column;gap:8px;}
+.sum-row{display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:12px;}
+.sum-key{color:var(--mu);}
+.sum-val{font-weight:700;}
+.sum-div{border:none;border-top:1px dashed var(--bdr);margin:2px 0;}
+.badge{display:inline-block;padding:2px 9px;border-radius:4px;font-size:11px;font-weight:700;}
+.badge-acc{background:rgba(0,200,255,.12);color:var(--acc);}
+.badge-red{background:rgba(255,68,68,.12);color:var(--red);}
+
+/* Bloco pagamento */
+.pag-block{background:var(--sur2);border:1px solid var(--bdr);border-radius:8px;overflow:hidden;}
+.pag-title{font-family:var(--mono);font-size:9px;color:var(--mu);letter-spacing:3px;
+  padding:9px 14px;border-bottom:1px solid var(--bdr);}
+.pag-body{padding:13px 14px;display:flex;flex-direction:column;gap:7px;}
+.pag-row{display:flex;justify-content:space-between;align-items:baseline;font-family:var(--mono);font-size:12px;}
+.pag-row .pk{color:var(--mu);}
+.pag-row .pv{font-weight:700;color:var(--acc);}
+.pag-row .pv-gold{font-weight:700;color:var(--yl);}
+.pag-row .pv-vista{font-weight:700;color:var(--acc);}
+.pag-sep{font-family:var(--mono);font-size:10px;letter-spacing:1px;color:var(--mu);
+  padding-top:4px;border-top:1px dashed var(--bdr);margin-top:2px;}
+
+/* Preview */
+.preview{background:#0d1117;border:1px solid #1f2937;border-radius:8px;overflow:hidden;}
+.prev-lbl{background:#161b22;padding:8px 14px;font-family:var(--mono);font-size:9px;
+  color:var(--acc);letter-spacing:2px;border-bottom:1px solid #1f2937;}
+.prev-body{padding:16px;font-family:var(--mono);font-size:13px;line-height:1.9;
+  color:#e6edf3;white-space:pre-wrap;word-break:break-word;}
+
+.copy-btn{width:100%;padding:15px;background:rgba(0,200,255,.08);border:1px solid rgba(0,200,255,.3);
+  border-radius:6px;color:var(--acc);font-family:var(--mono);font-size:12px;font-weight:700;
+  letter-spacing:2px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:10px;}
+.copy-btn:hover{background:rgba(0,200,255,.14);}
+.copy-btn.done{background:rgba(79,195,247,.1);border-color:rgba(79,195,247,.4);color:var(--bl);}
+
+.warn{background:rgba(255,214,10,.07);border:1px solid rgba(255,214,10,.25);
+  border-radius:4px;padding:9px 13px;font-family:var(--mono);font-size:10px;color:var(--yl);line-height:1.6;}
+.reset-btn{background:transparent;border:1px solid var(--bdr);color:var(--mu);
+  font-family:var(--mono);font-size:10px;padding:5px 12px;border-radius:3px;cursor:pointer;transition:all .15s;}
+.reset-btn:hover{border-color:var(--red);color:var(--red);}
+
+/* 2 cartões */
+.dois-cartoes{display:flex;flex-direction:column;gap:10px;margin-top:12px;}
+.cartao-bloco{background:var(--sur3);border:1px solid var(--bdr);border-radius:8px;padding:14px;}
+.cartao-titulo{font-family:var(--mono);font-size:10px;color:var(--acc);letter-spacing:2px;margin-bottom:10px;}
+.cartao-linha{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.cartao-lbl{font-family:var(--mono);font-size:10px;color:var(--mu);margin-bottom:6px;}
+.cartao-sel{width:100%;background:var(--sur2);border:1px solid var(--bdr);border-radius:6px;
+  padding:10px;color:var(--acc);font-family:var(--mono);font-size:14px;font-weight:700;outline:none;}
+.cartao-field{display:flex;align-items:center;gap:8px;background:var(--sur2);
+  border:1px solid var(--bdr);border-radius:6px;padding:10px 12px;}
+.cartao-field input{background:transparent;border:none;outline:none;
+  font-family:var(--mono);font-size:16px;font-weight:700;color:var(--yl);width:100%;}
+.cartao-field input::placeholder{color:#222;}
+
+.hidden{display:none!important;}
+@media(max-width:500px){
+  .ctogrid{grid-template-columns:1fr;}
+  .pgrid{grid-template-columns:repeat(auto-fill,minmax(90px,1fr));}
+  .cartao-linha{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div style="font-family:'Syne',sans-serif;font-size:32px;font-weight:800;letter-spacing:-1px;color:#fff;">
+    SIMONCINI<span style="color:var(--acc);">.</span>
+  </div>
+  <div style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:4px;color:var(--mu);margin-top:4px;">PHONES</div>
+  <div class="tag">Sistema de Upgrade</div>
+</header>
+
+<!-- 1. APARELHO VENDENDO -->
+<div class="card">
+  <div class="card-head"><div class="num">1</div><h2>Aparelho que você está vendendo</h2></div>
+  <div class="card-body">
+    <div class="field" style="margin-bottom:10px;">
+      <span class="fpre">📱</span>
+      <input class="text-inp" type="text" id="inp-nome" placeholder="Ex: iPhone 16 Pro Max" oninput="onNome()">
+    </div>
+    <div class="field" style="margin-bottom:14px;">
+      <span class="fpre">R$</span>
+      <input type="number" id="inp-preco" placeholder="0" min="0" oninput="recalc()">
+    </div>
+    <div style="font-family:var(--mono);font-size:10px;color:var(--mu);letter-spacing:1px;margin-bottom:8px;">MEMÓRIA DO APARELHO VENDIDO</div>
+    <div class="mem-grid" id="grid-mem-venda"></div>
+  </div>
+</div>
+
+<!-- 2. MARCA -->
+<div class="card">
+  <div class="card-head"><div class="num">2</div><h2>Marca</h2></div>
+  <div class="card-body">
+    <div class="brand-row">
+      <button class="brand-btn on" id="bb-apple"  onclick="setBrand('apple')">🍎 Apple</button>
+      <button class="brand-btn"    id="bb-garmin" onclick="setBrand('garmin')">⌚ Garmin</button>
+    </div>
+    <div id="garmin-note" class="garmin-note hidden">📦 Garmin: sempre novo lacrado — 1 ano de garantia</div>
+  </div>
+</div>
+
+<!-- 3. TIPO -->
+<div class="card" id="card-tipo">
+  <div class="card-head"><div class="num">3</div><h2>Tipo do Produto</h2></div>
+  <div class="card-body">
+    <div class="tog-row two" style="margin-bottom:10px;">
+      <button class="tbtn on" id="tb-semi" onclick="setTipo('semi')">📱 Seminovo</button>
+      <button class="tbtn"    id="tb-lacr" onclick="setTipo('lacr')">📦 Lacrado</button>
+    </div>
+    <div id="info-garantia" class="info-box">📋 Seminovo — garantia pelo modelo</div>
+  </div>
+</div>
+
+<!-- 4. MODALIDADE -->
+<div class="card" id="card-modo">
+  <div class="card-head"><div class="num">4</div><h2>Modalidade de Venda</h2></div>
+  <div class="card-body">
+    <div class="tog-row two">
+      <button class="tbtn on" id="tb-troca"   onclick="setModo('troca')">🔄 Com Troca</button>
+      <button class="tbtn"    id="tb-simples" onclick="setModo('simples')">💳 Sem Troca</button>
+    </div>
+  </div>
+</div>
+
+<!-- 5. MODELO DO CLIENTE -->
+<div class="card hidden" id="card-model">
+  <div class="card-head"><div class="num">5</div><h2>Modelo do iPhone do Cliente</h2></div>
+  <div class="card-body"><div class="pgrid" id="grid-model"></div></div>
+</div>
+
+<!-- 6. MEMÓRIA DO APARELHO DA TROCA -->
+<div class="card hidden" id="card-mem">
+  <div class="card-head"><div class="num">6</div><h2>Memória do Aparelho da Troca</h2></div>
+  <div class="card-body">
+    <div class="mem-grid" id="grid-mem"></div>
+    <div style="font-family:var(--mono);font-size:10px;color:var(--mu);margin-top:10px;line-height:1.6;">
+      Informativo — não altera o valor base da troca.
+    </div>
+  </div>
+</div>
+
+<!-- 7. BATERIA -->
+<div class="card hidden" id="card-bat">
+  <div class="card-head"><div class="num">7</div><h2>Bateria do Aparelho da Troca</h2></div>
+  <div class="card-body">
+    <div class="bat-row">
+      <span class="bat-lbl">Nível</span>
+      <input type="range" id="sl-bat" min="50" max="100" value="100">
+      <span class="bat-val" id="val-bat" style="color:var(--acc)">100%</span>
+    </div>
+    <div class="bat-note" id="note-bat"></div>
+  </div>
+</div>
+
+<!-- 8. CONDIÇÕES -->
+<div class="card hidden" id="card-cond">
+  <div class="card-head"><div class="num">8</div><h2>Condições do Aparelho da Troca</h2></div>
+  <div class="card-body">
+    <div class="ctogrid">
+      <div class="ctog" id="ctog-tela" onclick="togCond('tela')">
+        <div><div class="ctog-name">📱 Tela com defeito</div><div class="ctog-disc" id="disc-tela"></div></div>
+        <div class="sw"></div>
+      </div>
+      <div class="ctog" id="ctog-cam" onclick="togCond('cam')">
+        <div><div class="ctog-name">📷 Câmera traseira</div><div class="ctog-disc" id="disc-cam"></div></div>
+        <div class="sw"></div>
+      </div>
+      <div class="ctog" id="ctog-tam" onclick="togCond('tam')">
+        <div><div class="ctog-name">🔲 Tampa traseira</div><div class="ctog-disc" id="disc-tam"></div></div>
+        <div class="sw"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGAMENTO -->
+<div class="card">
+  <div class="card-head"><div class="num">💳</div><h2>Forma de Pagamento</h2></div>
+  <div class="card-body">
+    <div class="tog-row three" style="margin-bottom:12px;">
+      <button class="tbtn on2" id="tb-ambos"  onclick="setPag('ambos')">Ambos</button>
+      <button class="tbtn"     id="tb-avista" onclick="setPag('avista')">💰 À vista</button>
+      <button class="tbtn"     id="tb-parc"   onclick="setPag('parc')">💳 Parcelado</button>
+    </div>
+
+    <div id="wrap-chips">
+      <div style="font-family:var(--mono);font-size:10px;color:var(--mu);letter-spacing:1px;margin-bottom:8px;">SELECIONE AS PARCELAS</div>
+      <div class="chips" id="chips-grid"></div>
+      <div style="font-family:var(--mono);font-size:10px;color:var(--mu);margin-top:7px;">Toque para selecionar ou remover.</div>
+    </div>
+
+    <div id="wrap-entrada" class="hidden" style="margin-top:12px;">
+      <div style="font-family:var(--mono);font-size:10px;color:var(--mu);letter-spacing:1px;margin-bottom:8px;">ENTRADA (PIX / DINHEIRO)</div>
+      <div class="field">
+        <span class="fpre">R$</span>
+        <input type="number" id="inp-entrada" placeholder="0" min="0" oninput="recalc()" style="color:var(--yl);">
+      </div>
+      <div style="font-family:var(--mono);font-size:10px;color:var(--mu);margin-top:6px;">O restante será parcelado no cartão.</div>
+    </div>
+
+    <div id="wrap-2cart" class="hidden" style="margin-top:14px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+        <div style="font-family:var(--mono);font-size:10px;color:var(--mu);letter-spacing:1px;">DIVIDIR EM 2 CARTÕES</div>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+          <span style="font-family:var(--mono);font-size:10px;color:var(--mu);">OFF</span>
+          <div class="sw" id="sw-2cart" onclick="toggle2Cart()"></div>
+          <span style="font-family:var(--mono);font-size:10px;color:var(--mu);">ON</span>
+        </label>
+      </div>
+      <div id="config-2cart" class="hidden dois-cartoes">
+        <div class="cartao-bloco">
+          <div class="cartao-titulo">CARTÃO 1</div>
+          <div class="cartao-linha">
+            <div>
+              <div class="cartao-lbl">PARCELAS</div>
+              <select class="cartao-sel" id="c1-parc" onchange="recalc()">
+                <option value="1">1x</option><option value="2">2x</option><option value="3">3x</option>
+                <option value="4">4x</option><option value="5">5x</option><option value="6">6x</option>
+                <option value="7">7x</option><option value="8">8x</option><option value="9">9x</option>
+                <option value="10">10x</option><option value="11">11x</option><option value="12" selected>12x</option>
+                <option value="13">13x</option><option value="14">14x</option><option value="15">15x</option>
+                <option value="16">16x</option><option value="17">17x</option><option value="18">18x</option>
+              </select>
+            </div>
+            <div>
+              <div class="cartao-lbl">VALOR NO CARTÃO</div>
+              <div class="cartao-field">
+                <span style="font-family:var(--mono);font-size:12px;color:var(--mu);">R$</span>
+                <input type="number" id="c1-val" placeholder="0" min="0" oninput="recalc()">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="cartao-bloco">
+          <div class="cartao-titulo">CARTÃO 2</div>
+          <div class="cartao-linha">
+            <div>
+              <div class="cartao-lbl">PARCELAS</div>
+              <select class="cartao-sel" id="c2-parc" onchange="recalc()">
+                <option value="1">1x</option><option value="2">2x</option><option value="3">3x</option>
+                <option value="4">4x</option><option value="5">5x</option><option value="6" selected>6x</option>
+                <option value="7">7x</option><option value="8">8x</option><option value="9">9x</option>
+                <option value="10">10x</option><option value="11">11x</option><option value="12">12x</option>
+                <option value="13">13x</option><option value="14">14x</option><option value="15">15x</option>
+                <option value="16">16x</option><option value="17">17x</option><option value="18">18x</option>
+              </select>
+            </div>
+            <div>
+              <div class="cartao-lbl">VALOR NO CARTÃO</div>
+              <div class="cartao-field">
+                <span style="font-family:var(--mono);font-size:12px;color:var(--mu);">R$</span>
+                <input type="number" id="c2-val" placeholder="0" min="0" oninput="recalc()">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- RESULTADO -->
+<div class="rcard">
+  <div class="rhead">
+    <span>⚡ Resultado</span>
+    <button class="reset-btn" onclick="resetAll()">↺ Reiniciar</button>
+  </div>
+  <div class="rbody">
+    <div class="empty" id="el-empty">Preencha os campos acima para ver o resultado</div>
+    <div id="el-result" class="hidden"></div>
+  </div>
+</div>
+
+</div>
+
+<script>
+const TX = {
+  1:.046,2:.050,3:.057,4:.067,5:.072,
+  6:.079,7:.087,8:.098,9:.103,10:.109,
+  11:.1115,12:.1195,13:.1265,14:.1325,15:.149,
+  16:.1575,17:.162,18:.170
+};
+
+/* Valor base por modelo — memória é informativa */
+const UPG = [
+  {m:'11',        base:700,  bat:200, tela:300,  cam:250,  tam:200, rule:'n'},
+  {m:'11 PRO',    base:1100, bat:200, tela:400,  cam:500,  tam:200, rule:'n'},
+  {m:'11 PRO MAX',base:1200, bat:280, tela:450,  cam:500,  tam:250, rule:'n'},
+  {m:'12',        base:1000, bat:250, tela:400,  cam:520,  tam:250, rule:'h'},
+  {m:'12 MINI',   base:900,  bat:230, tela:380,  cam:480,  tam:230, rule:'h'},
+  {m:'12 PRO',    base:1550, bat:250, tela:400,  cam:650,  tam:280, rule:'h'},
+  {m:'12 PRO MAX',base:1900, bat:300, tela:650,  cam:650,  tam:330, rule:'h'},
+  {m:'13',        base:1600, bat:300, tela:600,  cam:600,  tam:280, rule:'h13'},
+  {m:'13 MINI',   base:1400, bat:280, tela:560,  cam:560,  tam:260, rule:'h13'},
+  {m:'13 PRO',    base:2100, bat:350, tela:700,  cam:650,  tam:330, rule:'h13'},
+  {m:'13 PRO MAX',base:2500, bat:400, tela:750,  cam:700,  tam:360, rule:'h13'},
+  {m:'14',        base:1800, bat:400, tela:690,  cam:700,  tam:430, rule:'h'},
+  {m:'14 PLUS',   base:2300, bat:400, tela:690,  cam:380,  tam:430, rule:'h'},
+  {m:'14 PRO',    base:2600, bat:420, tela:1000, cam:770,  tam:430, rule:'h'},
+  {m:'14 PRO MAX',base:2900, bat:420, tela:1100, cam:770,  tam:430, rule:'h'},
+  {m:'15',        base:2500, bat:450, tela:950,  cam:990,  tam:530, rule:'h'},
+  {m:'15 PLUS',   base:2850, bat:490, tela:950,  cam:1000, tam:530, rule:'h'},
+  {m:'15 PRO',    base:3000, bat:490, tela:1100, cam:1100, tam:530, rule:'h'},
+  {m:'15 PRO MAX',base:3700, bat:490, tela:1200, cam:1150, tam:530, rule:'h'},
+  {m:'16',        base:3300, bat:490, tela:1200, cam:1150, tam:580, rule:'h'},
+  {m:'16 PLUS',   base:3700, bat:490, tela:1200, cam:1150, tam:580, rule:'h'},
+  {m:'16 PRO',    base:4000, bat:490, tela:1200, cam:1150, tam:630, rule:'h'},
+  {m:'16 PRO MAX',base:4900, bat:600, tela:1550, cam:1150, tam:630, rule:'h'},
+  {m:'17',        base:4200, bat:500, tela:1300, cam:1200, tam:680, rule:'h'},
+  {m:'17 AIR',    base:4800, bat:500, tela:1300, cam:1200, tam:680, rule:'h'},
+  {m:'17 PRO',    base:5500, bat:550, tela:1400, cam:1300, tam:730, rule:'h'},
+  {m:'17 PRO MAX',base:6200, bat:600, tela:1600, cam:1300, tam:730, rule:'h'},
+];
+
+const MEM_OPTS = ['64GB','128GB','256GB','512GB','1TB'];
+const MODELS   = UPG.map(d=>d.m);
+
+/* Estado */
+let brand='apple', tipo='semi', modo='troca', pag='ambos', dois=false;
+let selChips=new Set();
+const st={model:null,mem:null,memVenda:null,bat:100,tela:false,cam:false,tam:false};
+
+/* Garantia */
+function getGarantia(nome){
+  if(brand==='garmin'||tipo==='lacr') return '1 ano de garantia';
+  const n=(nome||'').toUpperCase().replace(/IPHONE\s*/,'').trim();
+  if(/^11/.test(n)) return '3 meses de garantia';
+  if(/^12(\s|$)/.test(n)) return '3 meses de garantia';
+  return '6 meses de garantia';
+}
+function getDesc(nome){
+  if(brand==='garmin') return 'Lacrado, com 1 ano de garantia e nota fiscal.';
+  if(tipo==='lacr')    return 'Lacrado, com 1 ano de garantia Apple e nota fiscal.';
+  return '100% funcional, passa por testes rigorosos para entregar a melhor qualidade, com '+getGarantia(nome)+' e nota fiscal.';
+}
+function updateInfoBox(){
+  const el=qi('info-garantia'); if(!el) return;
+  const nome=qi('inp-nome').value||'';
+  el.textContent=tipo==='lacr'?'📋 Lacrado — 1 ano de garantia Apple':'📋 Seminovo — '+getGarantia(nome);
+}
+
+/* Marca */
+function setBrand(b){
+  brand=b;
+  qi('bb-apple').classList.toggle('on',b==='apple');
+  qi('bb-garmin').classList.toggle('on',b==='garmin');
+  qi('garmin-note').classList.toggle('hidden',b!=='garmin');
+  qi('card-tipo').classList.toggle('hidden',b==='garmin');
+  qi('card-modo').classList.toggle('hidden',b==='garmin');
+  ['card-model','card-mem','card-bat','card-cond'].forEach(id=>hide(id));
+  if(b==='garmin'){tipo='lacr';modo='simples';}
+  else{tipo='semi';modo='troca';setModo('troca');}
+  updateInfoBox();clearResult();recalc();
+}
+
+/* Tipo */
+function setTipo(t){
+  tipo=t;
+  qi('tb-semi').classList.toggle('on',t==='semi');
+  qi('tb-lacr').classList.toggle('on',t==='lacr');
+  updateInfoBox();recalc();
+}
+
+/* Modo */
+function setModo(m){
+  modo=m;
+  qi('tb-troca').classList.toggle('on',m==='troca');
+  qi('tb-simples').classList.toggle('on',m==='simples');
+  if(m==='simples'){['card-model','card-mem','card-bat','card-cond'].forEach(id=>hide(id));st.model=null;st.mem=null;}
+  else show('card-model');
+  clearResult();recalc();
+}
+
+/* Pagamento */
+function setPag(p){
+  pag=p;
+  ['ambos','avista','parc'].forEach(k=>{const e=qi('tb-'+k);e.classList.remove('on','on2');if(k===p)e.classList.add('on2');});
+  qi('wrap-chips').style.display=p!=='avista'?'block':'none';
+  qi('wrap-entrada').classList.toggle('hidden',p!=='parc');
+  qi('wrap-2cart').classList.toggle('hidden',p!=='parc');
+  if(p!=='parc'){qi('inp-entrada').value='';dois=false;qi('sw-2cart').classList.remove('on');qi('config-2cart').classList.add('hidden');}
+  recalc();
+}
+
+/* 2 cartões */
+function toggle2Cart(){
+  dois=!dois;
+  qi('sw-2cart').classList.toggle('on',dois);
+  qi('config-2cart').classList.toggle('hidden',!dois);
+  qi('wrap-chips').style.display=dois?'none':'block';
+  recalc();
+}
+
+/* Chips */
+function buildChips(){
+  const g=qi('chips-grid');g.innerHTML='';
+  for(let n=1;n<=18;n++){
+    const c=document.createElement('button');
+    c.className='chip'+(selChips.has(n)?' on':'');
+    c.textContent=n+'x';c.id='chip-'+n;
+    c.onclick=()=>{selChips.has(n)?selChips.delete(n):selChips.add(n);c.classList.toggle('on',selChips.has(n));recalc();};
+    g.appendChild(c);
+  }
+}
+
+/* Modelos */
+(function(){
+  const g=qi('grid-model');
+  MODELS.forEach(m=>{
+    const b=document.createElement('button');
+    b.className='pbtn';b.textContent=m;b.id='mb_'+m.replace(/\s/g,'_');
+    b.onclick=()=>{
+      st.model=m;st.mem=null;st.bat=100;st.tela=st.cam=st.tam=false;
+      document.querySelectorAll('.pbtn[id^=mb_]').forEach(x=>x.classList.remove('on'));
+      b.classList.add('on');
+      buildMem();show('card-mem');hide('card-bat');hide('card-cond');clearResult();
+    };
+    g.appendChild(b);
+  });
+})();
+
+/* Memória do aparelho VENDIDO — card 1 */
+function buildMemVenda(){
+  const g=qi('grid-mem-venda');g.innerHTML='';
+  MEM_OPTS.forEach(mem=>{
+    const b=document.createElement('button');
+    b.className='mbtn mbtn-venda'+(st.memVenda===mem?' on':'');
+    b.textContent=mem;b.id='mv_'+mem;
+    b.onclick=()=>{
+      st.memVenda=mem;
+      document.querySelectorAll('.mbtn-venda').forEach(x=>x.classList.remove('on'));
+      b.classList.add('on');
+      recalc();
+    };
+    g.appendChild(b);
+  });
+}
+
+/* Memória do aparelho da TROCA — aparece após selecionar modelo */
+function buildMem(){
+  const g=qi('grid-mem');g.innerHTML='';
+  MEM_OPTS.forEach(mem=>{
+    const b=document.createElement('button');
+    b.className='mbtn mbtn-troca'+(st.mem===mem?' on':'');
+    b.textContent=mem;b.id='mm_'+mem;
+    b.onclick=()=>{
+      st.mem=mem;
+      document.querySelectorAll('.mbtn-troca').forEach(x=>x.classList.remove('on'));
+      b.classList.add('on');
+      st.bat=100;st.tela=st.cam=st.tam=false;
+      ['tela','cam','tam'].forEach(k=>qi('ctog-'+k).classList.remove('on'));
+      const d=entry();
+      qi('sl-bat').value=100;batDisp(100);setBatNote(d);
+      qi('disc-tela').textContent='− R$ '+fmt(d.tela);
+      qi('disc-cam').textContent='− R$ '+fmt(d.cam);
+      qi('disc-tam').textContent='− R$ '+fmt(d.tam);
+      show('card-bat');show('card-cond');recalc();
+    };
+    g.appendChild(b);
+  });
+}
+
+/* Bateria */
+qi('sl-bat').addEventListener('input',function(){st.bat=+this.value;batDisp(st.bat);recalc();});
+function batDisp(v){
+  const el=qi('val-bat');el.textContent=v+'%';
+  el.style.color=v>=87?'var(--acc)':v>=84?'var(--yl)':'var(--red)';
+}
+function setBatNote(d){
+  const n=qi('note-bat');if(!d){n.textContent='';return;}
+  if(d.rule==='h13') n.innerHTML=`⚠️ iPhone 13+: abaixo 83% desconta <strong style="color:var(--yl)">R$ ${fmt(d.bat)}</strong>. 84–86% desconta metade.`;
+  else if(d.rule==='h') n.innerHTML=`⚠️ Abaixo 83% desconta <strong style="color:var(--yl)">R$ ${fmt(d.bat)}</strong>. 84–86% desconta metade.`;
+  else n.innerHTML=`Abaixo 83% desconta <strong style="color:var(--yl)">R$ ${fmt(d.bat)}</strong>.`;
+}
+
+/* Condições */
+function togCond(k){st[k]=!st[k];qi('ctog-'+k).classList.toggle('on',st[k]);recalc();}
+
+/* Cálculo */
+function entry(){return UPG.find(d=>d.m===st.model);}
+function calcBat(d,b){
+  if(b>=87) return 0;
+  if(d.rule==='n') return b<84?d.bat:0;
+  return (b>=84&&b<=86)?Math.round(d.bat/2):d.bat;
+}
+function calcP(base){
+  const p={};
+  for(let n=1;n<=18;n++){const tot=base>0?base/(1-TX[n]):0;p[n]={tot,parc:tot/n};}
+  return p;
+}
+
+function recalc(){
+  const preco=parseFloat(qi('inp-preco').value)||0;
+  const entrada=parseFloat(qi('inp-entrada').value)||0;
+  if(brand==='garmin'||modo==='simples'){
+    const rest=Math.max(0,preco-entrada);
+    renderResult(null,preco,0,0,preco,preco,calcP(rest),[],entrada);
+    return;
+  }
+  if(!st.model||!st.mem) return;
+  const d=entry();if(!d) return;
+  const dBat=calcBat(d,st.bat);
+  const dTela=st.tela?d.tela:0;
+  const dCam=st.cam?d.cam:0;
+  const dTam=st.tam?d.tam:0;
+  const totD=dBat+dTela+dCam+dTam;
+  const vTroca=Math.max(0,d.base-totD);
+  const diff=Math.max(0,preco-vTroca)+100; // +R$100 silencioso no modo troca
+  const rest=Math.max(0,diff-entrada);
+  const warns=[];
+  if((d.rule==='h'||d.rule==='h13')&&st.bat>=84&&st.bat<=86)
+    warns.push(`📋 Bateria ${st.bat}%: metade do desconto de bateria aplicada.`);
+  renderResult(d,preco,vTroca,totD,diff,diff,calcP(rest),warns,entrada);
+}
+
+/* Blocos pagamento */
+function buildPagData(aVista,p,entrada){
+  const showParc=pag==='ambos'||pag==='parc';
+  const showVista=pag==='ambos'||pag==='avista';
+  const temEntr=entrada>0&&pag==='parc';
+  const rows=[];let msg='';
+
+  if(showParc){
+    if(dois&&pag==='parc'){
+      const n1=parseInt(qi('c1-parc').value)||12;
+      const n2=parseInt(qi('c2-parc').value)||6;
+      const v1=parseFloat(qi('c1-val').value)||0;
+      const v2=parseFloat(qi('c2-val').value)||0;
+      const p1=v1>0?(v1/(1-TX[n1]))/n1:0;
+      const p2=v2>0?(v2/(1-TX[n2]))/n2:0;
+      if(temEntr){rows.push({type:'entrada',label:'Entrada PIX/Dinheiro',val:brl(entrada)});msg+=`\nEntrada (PIX/Dinheiro): ${brl(entrada)}\n\n`;}
+      rows.push({type:'sep',label:'Parcelado em 2 cartões'});
+      msg+=`\nParcelado em 2 cartões:\n`;
+      if(p1>0){rows.push({type:'parc',label:`Cartão 1 — ${n1}x`,val:brl(p1)});msg+=`Cartão 1: ${n1}x de ${brl(p1)}\n`;}
+      if(p2>0){rows.push({type:'parc',label:`Cartão 2 — ${n2}x`,val:brl(p2)});msg+=`Cartão 2: ${n2}x de ${brl(p2)}\n`;}
+    } else {
+      const sels=[...selChips].sort((a,b)=>a-b);
+      if(sels.length>0){
+        if(temEntr){
+          rows.push({type:'entrada',label:'Entrada PIX/Dinheiro',val:brl(entrada)});
+          rows.push({type:'sep',label:'Restante no cartão'});
+          msg+=`\nEntrada (PIX/Dinheiro): ${brl(entrada)}\nParcelado no cartão (restante):\n`;
+        } else {
+          rows.push({type:'sep',label:'Parcelado no cartão'});
+          msg+=`\nParcelado no cartão:\n`;
+        }
+        sels.forEach(n=>{
+          const v=p[n]?p[n].parc:0;
+          if(v<=0) return;
+          rows.push({type:'parc',label:`${n}x de`,val:brl(v)});
+          msg+=`${n}x de ${brl(v)}\n`;
+        });
+      }
+    }
+  }
+  if(showVista&&aVista>0){
+    rows.push({type:'vista',label:'À vista com desconto',val:brl(aVista)});
+    msg+=`\n💰 À vista com desconto: ${brl(aVista)}`;
+  }
+  return {rows,msg};
+}
+
+/* Render */
+function renderResult(d,preco,vTroca,totD,diff,aVista,p,warns,entrada){
+  qi('el-empty').classList.add('hidden');
+  const area=qi('el-result');area.classList.remove('hidden');
+
+  const nome=(qi('inp-nome').value||'').trim();
+  const memVendaTag=st.memVenda?` ${st.memVenda}`:'';
+  const memTrocaTag=st.mem?` ${st.mem}`:'';
+
+  // Aparelho de saída (vendido)
+  const labelSaida=nome?(nome+memVendaTag):(brand==='garmin'?'Garmin':(d?`iPhone ${d.m}`:'iPhone'));
+
+  // Aparelho de entrada (troca)
+  let linhasEntrada=[];
+  let linhasEntradaHtml=[];
+  if(d&&modo==='troca'){
+    const modeloEntrada=`iPhone ${d.m}${memTrocaTag}`;
+    linhasEntrada.push(modeloEntrada);
+    linhasEntradaHtml.push(`<strong>${esc(modeloEntrada)}</strong>`);
+
+    // Bateria
+    if(st.bat<80){
+      const batLinha=`Bateria em manutenção — ${st.bat}%`;
+      linhasEntrada.push(batLinha);
+      linhasEntradaHtml.push(`🔧 ${esc(batLinha)}`);
+    } else {
+      const batLinha=`Bateria: ${st.bat}%`;
+      linhasEntrada.push(batLinha);
+      linhasEntradaHtml.push(`🔋 ${esc(batLinha)}`);
+    }
+
+    // Peças com defeito
+    if(st.tela){linhasEntrada.push('Tela em manutenção');linhasEntradaHtml.push('🔧 Tela em manutenção');}
+    if(st.cam) {linhasEntrada.push('Câmera traseira em manutenção');linhasEntradaHtml.push('🔧 Câmera traseira em manutenção');}
+    if(st.tam) {linhasEntrada.push('Tampa traseira em manutenção');linhasEntradaHtml.push('🔧 Tampa traseira em manutenção');}
+  }
+
+  const desc=getDesc(labelSaida);
+  const temPreco=preco>0;
+
+  const {rows,msg:pagMsg}=buildPagData(temPreco?aVista:0,p,entrada||0);
+
+  /* ── RESUMO INTERNO ── */
+  let resumoHtml='';
+  if(d&&brand==='apple'&&modo==='troca'){
+    const memBadge=st.mem?` <span class="badge badge-acc">${st.mem}</span>`:'';
+    resumoHtml=`<div class="summary">
+      <div class="sum-title">RESUMO INTERNO — VENDEDOR</div>
+      <div class="sum-body">
+        <div class="sum-row"><span class="sum-key">Aparelho da troca</span><span class="sum-val">${esc(d.m)}${memBadge}</span></div>
+        <div class="sum-row"><span class="sum-key">Bateria</span>
+          <span class="sum-val" style="color:${st.bat>=87?'var(--acc)':st.bat>=84?'var(--yl)':'var(--red)'}">${st.bat}%</span></div>
+        <div class="sum-row"><span class="sum-key">Valor base tabela</span><span class="sum-val">${brl(d.base)}</span></div>
+        ${totD>0?`<div class="sum-row"><span class="sum-key">Descontos aplicados</span>
+          <span class="sum-val badge badge-red">− ${brl(totD)}</span></div>`:''}
+        <hr class="sum-div">
+        <div class="sum-row">
+          <span class="sum-key">✅ Você paga pela troca</span>
+          <span class="sum-val" style="color:var(--or);font-size:15px">${brl(vTroca)}</span>
+        </div>
+        ${temPreco?`<hr class="sum-div">
+        <div class="sum-row"><span class="sum-key">Preço de venda</span><span class="sum-val">${brl(preco)}</span></div>
+        <div class="sum-row">
+          <span class="sum-key">💳 Cliente paga a diferença</span>
+          <span class="sum-val" style="color:var(--acc);font-size:16px">${brl(diff)}</span>
+        </div>`:''}
+      </div>
+    </div>`;
+  }
+
+  /* ── BLOCO PAGAMENTO ── */
+  let pagHtml='';
+  if(rows.length>0&&temPreco){
+    let rowsHtml='';
+    rows.forEach(r=>{
+      if(r.type==='sep'){
+        rowsHtml+=`<div class="pag-sep">${r.label.toUpperCase()}</div>`;
+      } else if(r.type==='entrada'){
+        rowsHtml+=`<div class="pag-row"><span class="pk">${r.label}</span><span class="pv-gold">${r.val}</span></div>`;
+      } else if(r.type==='vista'){
+        rowsHtml+=`<div class="pag-row"><span class="pk">💰 ${r.label}</span><span class="pv-vista">${r.val}</span></div>`;
+      } else {
+        rowsHtml+=`<div class="pag-row"><span class="pk">${r.label}</span><span class="pv">${r.val}</span></div>`;
+      }
+    });
+    pagHtml=`<div class="pag-block">
+      <div class="pag-title">FORMAS DE PAGAMENTO</div>
+      <div class="pag-body">${rowsHtml}</div>
+    </div>`;
+  }
+
+  /* ── PREVIEW MENSAGEM ── */
+  // Monta linhas de pagamento
+  let prevPagLines='';
+  let msgPagLines='';
+  rows.forEach(r=>{
+    if(r.type==='sep'){prevPagLines+=`\n<strong>${r.label}:</strong>\n`;msgPagLines+=`\n${r.label}:\n`;}
+    else if(r.type==='entrada'){prevPagLines+=`💵 ${r.label}: <strong>${r.val}</strong>\n`;msgPagLines+=`💵 ${r.label}: ${r.val}\n`;}
+    else if(r.type==='vista'){prevPagLines+=`💰 ${r.label}: <strong>${r.val}</strong>`;msgPagLines+=`💰 ${r.label}: ${r.val}`;}
+    else{prevPagLines+=`${r.label} <strong>${r.val}</strong>\n`;msgPagLines+=`${r.label} ${r.val}\n`;}
+  });
+
+  // Bloco saída
+  const separador='─────────────────────';
+  let prevText='';
+  let msgCopyText='';
+
+  if(modo==='troca'&&d){
+    // Saída
+    prevText+=`${separador}\n`;
+    prevText+=`📤 <strong>APARELHO DE SAÍDA</strong>\n`;
+    prevText+=`${separador}\n`;
+    prevText+=`<strong>${esc(labelSaida)}</strong>\n`;
+    prevText+=`${esc(desc)}\n`;
+
+    msgCopyText+=`${separador}\n`;
+    msgCopyText+=`📤 APARELHO DE SAÍDA\n`;
+    msgCopyText+=`${separador}\n`;
+    msgCopyText+=`${labelSaida}\n`;
+    msgCopyText+=`${desc}\n`;
+
+    // Entrada
+    prevText+=`\n${separador}\n`;
+    prevText+=`📥 <strong>APARELHO DE ENTRADA</strong>\n`;
+    prevText+=`${separador}\n`;
+    linhasEntradaHtml.forEach(l=>{prevText+=`${l}\n`;});
+
+    msgCopyText+=`\n${separador}\n`;
+    msgCopyText+=`📥 APARELHO DE ENTRADA\n`;
+    msgCopyText+=`${separador}\n`;
+    linhasEntrada.forEach(l=>{msgCopyText+=`${l}\n`;});
+
+    // Pagamento
+    if(temPreco){
+      prevText+=`\n${separador}\n`;
+      prevText+=`💳 <strong>PAGAMENTO DA DIFERENÇA</strong>\n`;
+      prevText+=`${separador}\n`;
+      msgCopyText+=`\n${separador}\n`;
+      msgCopyText+=`💳 PAGAMENTO DA DIFERENÇA\n`;
+      msgCopyText+=`${separador}\n`;
+      if(diff===0){
+        prevText+=`<strong>✅ A troca cobre o valor total!</strong>`;
+        msgCopyText+=`✅ A troca cobre o valor total!`;
+      } else if(!prevPagLines){
+        prevText+=`<span style="color:var(--mu)">← Selecione a forma de pagamento</span>`;
+      } else {
+        prevText+=prevPagLines;
+        msgCopyText+=msgPagLines;
+      }
+    } else {
+      prevText+=`\n<span style="color:var(--mu)">← Informe o preço de venda</span>`;
+    }
+
+  } else {
+    // Sem troca — formato simples
+    prevText+=`<strong>${esc(labelSaida)}</strong>\n${esc(desc)}\n\n`;
+    msgCopyText+=`${labelSaida}\n${desc}\n\n`;
+    if(!temPreco)     {prevText+=`<span style="color:var(--mu)">← Informe o preço de venda</span>`;}
+    else if(diff===0) {prevText+=`<strong>✅ A troca cobre o valor total!</strong>`;msgCopyText+=`✅ A troca cobre o valor total!`;}
+    else if(!prevPagLines){prevText+=`<span style="color:var(--mu)">← Selecione a forma de pagamento</span>`;}
+    else{prevText+=prevPagLines;msgCopyText+=msgPagLines;}
+  }
+
+  const msgCopy=msgCopyText;
+
+  area.innerHTML=resumoHtml+
+    (warns.length?`<div class="warn">${warns.join('<br>')}</div>`:'')+
+    pagHtml+
+    `<div class="preview">
+      <div class="prev-lbl">PRÉVIA — MENSAGEM PARA O CLIENTE</div>
+      <div class="prev-body">${prevText}</div>
+    </div>
+    <button class="copy-btn" id="copy-btn" onclick="copyMsg()">📋 &nbsp;COPIAR E COLAR NO WHATSAPP</button>`;
+
+  window._msg=msgCopy;
+}
+
+/* Copiar */
+function copyMsg(){
+  const txt=window._msg||'';
+  const ok=()=>{
+    const b=qi('copy-btn');b.classList.add('done');b.innerHTML='✅ &nbsp;COPIADO! COLE NO WHATSAPP';
+    setTimeout(()=>{b.classList.remove('done');b.innerHTML='📋 &nbsp;COPIAR E COLAR NO WHATSAPP';},3500);
+  };
+  if(navigator.clipboard) navigator.clipboard.writeText(txt).then(ok).catch(()=>fb(txt,ok));
+  else fb(txt,ok);
+}
+function fb(txt,ok){
+  const t=document.createElement('textarea');t.value=txt;t.style.cssText='position:fixed;left:-9999px;opacity:0;';
+  document.body.appendChild(t);t.select();document.execCommand('copy');t.remove();ok();
+}
+
+/* Reset */
+function resetAll(){
+  brand='apple';tipo='semi';modo='troca';pag='ambos';dois=false;selChips=new Set();
+  Object.assign(st,{model:null,mem:null,memVenda:null,bat:100,tela:false,cam:false,tam:false});
+  document.querySelectorAll('.pbtn,.mbtn-troca,.mbtn-venda').forEach(b=>b.classList.remove('on'));
+  ['bb-apple','tb-semi','tb-troca'].forEach(id=>qi(id).classList.add('on'));
+  ['bb-garmin','tb-lacr','tb-simples'].forEach(id=>qi(id).classList.remove('on'));
+  qi('card-tipo').classList.remove('hidden');qi('card-modo').classList.remove('hidden');
+  qi('garmin-note').classList.add('hidden');
+  ['card-model','card-mem','card-bat','card-cond'].forEach(id=>hide(id));
+  qi('sl-bat').value=100;batDisp(100);
+  qi('wrap-chips').style.display='block';
+  qi('sw-2cart').classList.remove('on');qi('config-2cart').classList.add('hidden');
+  qi('wrap-2cart').classList.add('hidden');qi('wrap-entrada').classList.add('hidden');
+  qi('inp-nome').value='';qi('inp-preco').value='';qi('inp-entrada').value='';
+  ['ambos','avista','parc'].forEach(k=>{const e=qi('tb-'+k);e.classList.remove('on','on2');});
+  qi('tb-ambos').classList.add('on2');
+  buildChips();updateInfoBox();clearResult();
+}
+
+/* Utils */
+function fmt(v){return Number(v).toLocaleString('pt-BR');}
+function brl(v){return 'R$ '+Number(v).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function qi(id){return document.getElementById(id);}
+function show(id){qi(id).classList.remove('hidden');}
+function hide(id){qi(id).classList.add('hidden');}
+function clearResult(){qi('el-empty').classList.remove('hidden');qi('el-result').classList.add('hidden');}
+function onNome(){updateInfoBox();recalc();}
+
+buildChips();
+updateInfoBox();
+buildMemVenda();
+</script>
+</body>
+</html>
