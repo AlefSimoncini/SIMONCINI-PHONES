@@ -289,6 +289,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;heigh
 <div class="card hidden" id="card-cond">
   <div class="card-head"><div class="num">8</div><h2>Condições do Aparelho da Troca</h2></div>
   <div class="card-body">
+    <div style="font-family:var(--mono);font-size:9px;color:var(--mu);letter-spacing:2px;margin-bottom:8px;">DEFEITOS DO APARELHO</div>
     <div class="ctogrid">
       <div class="ctog" id="ctog-tela" onclick="togCond('tela')">
         <div><div class="ctog-name">📱 Tela com defeito</div><div class="ctog-disc" id="disc-tela"></div></div>
@@ -300,6 +301,42 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;heigh
       </div>
       <div class="ctog" id="ctog-tam" onclick="togCond('tam')">
         <div><div class="ctog-name">🔲 Tampa traseira</div><div class="ctog-disc" id="disc-tam"></div></div>
+        <div class="sw"></div>
+      </div>
+      <div class="ctog" id="ctog-vidro" onclick="togCond('vidro')">
+        <div><div class="ctog-name">🔳 Troca de vidro</div><div class="ctog-disc" id="disc-vidro"></div></div>
+        <div class="sw"></div>
+      </div>
+    </div>
+
+    <div style="font-family:var(--mono);font-size:9px;color:var(--mu);letter-spacing:2px;margin:14px 0 8px;">PEÇAS / ACESSÓRIOS</div>
+    <div class="ctogrid">
+      <div class="ctog" id="ctog-conector" onclick="togCond('conector')">
+        <div><div class="ctog-name">🔌 Conector de carga</div><div class="ctog-disc" id="disc-conector"></div></div>
+        <div class="sw"></div>
+      </div>
+      <div class="ctog" id="ctog-flexpower" onclick="togCond('flexpower')">
+        <div><div class="ctog-name">⚡ Flex Power</div><div class="ctog-disc" id="disc-flexpower"></div></div>
+        <div class="sw"></div>
+      </div>
+      <div class="ctog" id="ctog-flexvolume" onclick="togCond('flexvolume')">
+        <div><div class="ctog-name">🔊 Flex Volume</div><div class="ctog-disc" id="disc-flexvolume"></div></div>
+        <div class="sw"></div>
+      </div>
+      <div class="ctog" id="ctog-flash" onclick="togCond('flash')">
+        <div><div class="ctog-name">🔦 Flash/Lanterna</div><div class="ctog-disc" id="disc-flash"></div></div>
+        <div class="sw"></div>
+      </div>
+      <div class="ctog" id="ctog-auricular" onclick="togCond('auricular')">
+        <div><div class="ctog-name">🔈 Auricular</div><div class="ctog-disc" id="disc-auricular"></div></div>
+        <div class="sw"></div>
+      </div>
+      <div class="ctog" id="ctog-sensor" onclick="togCond('sensor')">
+        <div><div class="ctog-name">👁 Sensor</div><div class="ctog-disc" id="disc-sensor"></div></div>
+        <div class="sw"></div>
+      </div>
+      <div class="ctog" id="ctog-camfrontc" onclick="togCond('camfrontc')">
+        <div><div class="ctog-name">🤳 Câmera Frontal</div><div class="ctog-disc" id="disc-camfrontc"></div></div>
         <div class="sw"></div>
       </div>
     </div>
@@ -416,33 +453,34 @@ const TX = {
 
 /* Valor base por modelo — memória é informativa */
 const UPG = [
-  {m:'11',        base:700,  bat:200, tela:300,  cam:250,  tam:200, rule:'n'},
-  {m:'11 PRO',    base:1100, bat:200, tela:400,  cam:500,  tam:200, rule:'n'},
-  {m:'11 PRO MAX',base:1200, bat:280, tela:450,  cam:500,  tam:250, rule:'n'},
-  {m:'12',        base:1000, bat:250, tela:400,  cam:520,  tam:250, rule:'h'},
-  {m:'12 MINI',   base:900,  bat:230, tela:380,  cam:480,  tam:230, rule:'h'},
-  {m:'12 PRO',    base:1550, bat:250, tela:400,  cam:650,  tam:280, rule:'h'},
-  {m:'12 PRO MAX',base:1900, bat:300, tela:650,  cam:650,  tam:330, rule:'h'},
-  {m:'13',        base:1600, bat:300, tela:600,  cam:600,  tam:280, rule:'h13'},
-  {m:'13 MINI',   base:1400, bat:280, tela:560,  cam:560,  tam:260, rule:'h13'},
-  {m:'13 PRO',    base:2100, bat:350, tela:700,  cam:650,  tam:330, rule:'h13'},
-  {m:'13 PRO MAX',base:2500, bat:400, tela:750,  cam:700,  tam:360, rule:'h13'},
-  {m:'14',        base:1800, bat:400, tela:690,  cam:700,  tam:430, rule:'h'},
-  {m:'14 PLUS',   base:2300, bat:400, tela:690,  cam:380,  tam:430, rule:'h'},
-  {m:'14 PRO',    base:2600, bat:420, tela:1000, cam:770,  tam:430, rule:'h'},
-  {m:'14 PRO MAX',base:2900, bat:420, tela:1100, cam:770,  tam:430, rule:'h'},
-  {m:'15',        base:2500, bat:450, tela:950,  cam:990,  tam:530, rule:'h'},
-  {m:'15 PLUS',   base:2850, bat:490, tela:950,  cam:1000, tam:530, rule:'h'},
-  {m:'15 PRO',    base:3000, bat:490, tela:1100, cam:1100, tam:530, rule:'h'},
-  {m:'15 PRO MAX',base:3700, bat:490, tela:1200, cam:1150, tam:530, rule:'h'},
-  {m:'16',        base:3300, bat:490, tela:1200, cam:1150, tam:580, rule:'h'},
-  {m:'16 PLUS',   base:3700, bat:490, tela:1200, cam:1150, tam:580, rule:'h'},
-  {m:'16 PRO',    base:4000, bat:490, tela:1200, cam:1150, tam:630, rule:'h'},
-  {m:'16 PRO MAX',base:4900, bat:600, tela:1550, cam:1150, tam:630, rule:'h'},
-  {m:'17',        base:4200, bat:500, tela:1300, cam:1200, tam:680, rule:'h'},
-  {m:'17 AIR',    base:4800, bat:500, tela:1300, cam:1200, tam:680, rule:'h'},
-  {m:'17 PRO',    base:5500, bat:550, tela:1400, cam:1300, tam:730, rule:'h'},
-  {m:'17 PRO MAX',base:6200, bat:600, tela:1600, cam:1300, tam:730, rule:'h'},
+  // tam: tabela+200 até 14Plus | tabela+250 de 15 a 16Plus | tabela+300 de 16ProMax+
+  {m:'11',        base:700,  bat:200, tela:300,  cam:300,  tam:300,  vidro:300,  conector:230, flexpower:230, flexvolume:230, flash:230, auricular:230, sensor:0,   camfrontc:270, rule:'n'},
+  {m:'11 PRO',    base:1100, bat:200, tela:400,  cam:400,  tam:320,  vidro:300,  conector:380, flexpower:270, flexvolume:270, flash:270, auricular:240, sensor:0,   camfrontc:270, rule:'n'},
+  {m:'11 PRO MAX',base:1200, bat:280, tela:450,  cam:400,  tam:320,  vidro:300,  conector:380, flexpower:270, flexvolume:270, flash:270, auricular:240, sensor:0,   camfrontc:270, rule:'n'},
+  {m:'12',        base:1000, bat:250, tela:400,  cam:350,  tam:320,  vidro:300,  conector:270, flexpower:270, flexvolume:270, flash:240, auricular:240, sensor:0,   camfrontc:270, rule:'h'},
+  {m:'12 MINI',   base:900,  bat:230, tela:380,  cam:350,  tam:320,  vidro:300,  conector:270, flexpower:270, flexvolume:270, flash:240, auricular:240, sensor:0,   camfrontc:270, rule:'h'},
+  {m:'12 PRO',    base:1550, bat:250, tela:400,  cam:560,  tam:320,  vidro:300,  conector:270, flexpower:270, flexvolume:270, flash:240, auricular:240, sensor:0,   camfrontc:270, rule:'h'},
+  {m:'12 PRO MAX',base:1900, bat:300, tela:650,  cam:550,  tam:350,  vidro:330,  conector:300, flexpower:270, flexvolume:270, flash:240, auricular:240, sensor:0,   camfrontc:300, rule:'h'},
+  {m:'13',        base:1600, bat:300, tela:600,  cam:330,  tam:320,  vidro:320,  conector:280, flexpower:270, flexvolume:270, flash:240, auricular:270, sensor:240, camfrontc:350, rule:'h13'},
+  {m:'13 MINI',   base:1400, bat:280, tela:560,  cam:330,  tam:320,  vidro:320,  conector:280, flexpower:270, flexvolume:270, flash:240, auricular:270, sensor:240, camfrontc:350, rule:'h13'},
+  {m:'13 PRO',    base:2100, bat:350, tela:700,  cam:590,  tam:350,  vidro:320,  conector:330, flexpower:270, flexvolume:300, flash:270, auricular:270, sensor:240, camfrontc:350, rule:'h13'},
+  {m:'13 PRO MAX',base:2500, bat:400, tela:750,  cam:590,  tam:380,  vidro:350,  conector:330, flexpower:270, flexvolume:300, flash:270, auricular:270, sensor:240, camfrontc:350, rule:'h13'},
+  {m:'14',        base:1800, bat:400, tela:690,  cam:390,  tam:350,  vidro:320,  conector:300, flexpower:300, flexvolume:280, flash:300, auricular:270, sensor:240, camfrontc:350, rule:'h'},
+  {m:'14 PLUS',   base:2300, bat:400, tela:690,  cam:390,  tam:350,  vidro:320,  conector:300, flexpower:300, flexvolume:280, flash:300, auricular:270, sensor:240, camfrontc:350, rule:'h'},
+  {m:'14 PRO',    base:2600, bat:420, tela:1000, cam:490,  tam:370,  vidro:360,  conector:350, flexpower:300, flexvolume:310, flash:280, auricular:270, sensor:300, camfrontc:350, rule:'h'},
+  {m:'14 PRO MAX',base:2900, bat:420, tela:1100, cam:490,  tam:380,  vidro:380,  conector:350, flexpower:330, flexvolume:330, flash:280, auricular:270, sensor:300, camfrontc:350, rule:'h'},
+  {m:'15',        base:2500, bat:450, tela:950,  cam:480,  tam:400,  vidro:350,  conector:400, flexpower:350, flexvolume:350, flash:390, auricular:320, sensor:320, camfrontc:400, rule:'h'},
+  {m:'15 PLUS',   base:2850, bat:490, tela:950,  cam:480,  tam:400,  vidro:350,  conector:400, flexpower:350, flexvolume:350, flash:390, auricular:320, sensor:320, camfrontc:400, rule:'h'},
+  {m:'15 PRO',    base:3000, bat:490, tela:1100, cam:530,  tam:450,  vidro:450,  conector:430, flexpower:360, flexvolume:360, flash:370, auricular:320, sensor:350, camfrontc:400, rule:'h'},
+  {m:'15 PRO MAX',base:3700, bat:490, tela:1200, cam:580,  tam:450,  vidro:500,  conector:450, flexpower:380, flexvolume:370, flash:370, auricular:320, sensor:350, camfrontc:400, rule:'h'},
+  {m:'16',        base:3300, bat:490, tela:1200, cam:570,  tam:430,  vidro:500,  conector:450, flexpower:350, flexvolume:350, flash:400, auricular:390, sensor:350, camfrontc:500, rule:'h'},
+  {m:'16 PLUS',   base:3700, bat:490, tela:1200, cam:570,  tam:430,  vidro:500,  conector:450, flexpower:350, flexvolume:350, flash:400, auricular:390, sensor:350, camfrontc:500, rule:'h'},
+  {m:'16 PRO',    base:4000, bat:490, tela:1200, cam:620,  tam:530,  vidro:550,  conector:480, flexpower:370, flexvolume:370, flash:400, auricular:400, sensor:350, camfrontc:590, rule:'h'},
+  {m:'16 PRO MAX',base:4900, bat:600, tela:1550, cam:650,  tam:530,  vidro:550,  conector:540, flexpower:420, flexvolume:420, flash:480, auricular:450, sensor:400, camfrontc:640, rule:'h'},
+  {m:'17',        base:4200, bat:500, tela:1300, cam:650,  tam:550,  vidro:600,  conector:540, flexpower:420, flexvolume:420, flash:480, auricular:450, sensor:400, camfrontc:640, rule:'h'},
+  {m:'17 AIR',    base:4800, bat:500, tela:1300, cam:650,  tam:550,  vidro:600,  conector:540, flexpower:420, flexvolume:420, flash:480, auricular:450, sensor:400, camfrontc:640, rule:'h'},
+  {m:'17 PRO',    base:5500, bat:550, tela:1400, cam:650,  tam:500,  vidro:700,  conector:540, flexpower:420, flexvolume:420, flash:480, auricular:450, sensor:400, camfrontc:640, rule:'h'},
+  {m:'17 PRO MAX',base:6200, bat:600, tela:1600, cam:650,  tam:500,  vidro:700,  conector:540, flexpower:420, flexvolume:420, flash:480, auricular:450, sensor:400, camfrontc:640, rule:'h'},
 ];
 
 const MEM_OPTS = ['64GB','128GB','256GB','512GB','1TB'];
@@ -451,7 +489,7 @@ const MODELS   = UPG.map(d=>d.m);
 /* Estado */
 let brand='apple', tipo='semi', modo='troca', pag='ambos', dois=false;
 let selChips=new Set();
-const st={model:null,mem:null,memVenda:null,bat:100,tela:false,cam:false,tam:false};
+const st={model:null,mem:null,memVenda:null,bat:100,tela:false,cam:false,tam:false,vidro:false,conector:false,flexpower:false,flexvolume:false,flash:false,auricular:false,sensor:false,camfrontc:false};
 
 /* Garantia */
 function getGarantia(nome){
@@ -580,13 +618,22 @@ function buildMem(){
       st.mem=mem;
       document.querySelectorAll('.mbtn-troca').forEach(x=>x.classList.remove('on'));
       b.classList.add('on');
-      st.bat=100;st.tela=st.cam=st.tam=false;
-      ['tela','cam','tam'].forEach(k=>qi('ctog-'+k).classList.remove('on'));
+      st.bat=100;st.tela=st.cam=st.tam=st.vidro=st.conector=st.flexpower=st.flexvolume=st.flash=st.auricular=st.sensor=st.camfrontc=false;
+      ['tela','cam','tam','vidro','conector','flexpower','flexvolume','flash','auricular','sensor','camfrontc'].forEach(k=>qi('ctog-'+k).classList.remove('on'));
       const d=entry();
       qi('sl-bat').value=100;batDisp(100);setBatNote(d);
       qi('disc-tela').textContent='− R$ '+fmt(d.tela);
       qi('disc-cam').textContent='− R$ '+fmt(d.cam);
       qi('disc-tam').textContent='− R$ '+fmt(d.tam);
+      qi('disc-vidro').textContent='− R$ '+fmt(d.vidro);
+      qi('disc-conector').textContent='− R$ '+fmt(d.conector);
+      qi('disc-flexpower').textContent='− R$ '+fmt(d.flexpower);
+      qi('disc-flexvolume').textContent='− R$ '+fmt(d.flexvolume);
+      qi('disc-flash').textContent='− R$ '+fmt(d.flash);
+      qi('disc-auricular').textContent='− R$ '+fmt(d.auricular);
+      if(d.sensor) qi('disc-sensor').textContent='− R$ '+fmt(d.sensor);
+      else qi('disc-sensor').textContent='N/D neste modelo';
+      qi('disc-camfrontc').textContent='− R$ '+fmt(d.camfrontc);
       show('card-bat');show('card-cond');recalc();
     };
     g.appendChild(b);
@@ -636,7 +683,15 @@ function recalc(){
   const dTela=st.tela?d.tela:0;
   const dCam=st.cam?d.cam:0;
   const dTam=st.tam?d.tam:0;
-  const totD=dBat+dTela+dCam+dTam;
+  const dVidro=st.vidro?d.vidro:0;
+  const dConector=st.conector?d.conector:0;
+  const dFlexpower=st.flexpower?d.flexpower:0;
+  const dFlexvolume=st.flexvolume?d.flexvolume:0;
+  const dFlash=st.flash?d.flash:0;
+  const dAuricular=st.auricular?d.auricular:0;
+  const dSensor=st.sensor?(d.sensor||0):0;
+  const dCamfrontc=st.camfrontc?d.camfrontc:0;
+  const totD=dBat+dTela+dCam+dTam+dVidro+dConector+dFlexpower+dFlexvolume+dFlash+dAuricular+dSensor+dCamfrontc;
   const vTroca=Math.max(0,d.base-totD);
   const diff=Math.max(0,preco-vTroca)+100; // +R$100 silencioso no modo troca
   const rest=Math.max(0,diff-entrada);
@@ -725,9 +780,17 @@ function renderResult(d,preco,vTroca,totD,diff,aVista,p,warns,entrada){
     }
 
     // Peças com defeito
-    if(st.tela){linhasEntrada.push('Tela em manutenção');linhasEntradaHtml.push('🔧 Tela em manutenção');}
-    if(st.cam) {linhasEntrada.push('Câmera traseira em manutenção');linhasEntradaHtml.push('🔧 Câmera traseira em manutenção');}
-    if(st.tam) {linhasEntrada.push('Tampa traseira em manutenção');linhasEntradaHtml.push('🔧 Tampa traseira em manutenção');}
+    if(st.tela)     {linhasEntrada.push('Tela em manutenção');linhasEntradaHtml.push('🔧 Tela em manutenção');}
+    if(st.cam)      {linhasEntrada.push('Câmera traseira em manutenção');linhasEntradaHtml.push('🔧 Câmera traseira em manutenção');}
+    if(st.tam)      {linhasEntrada.push('Tampa traseira em manutenção');linhasEntradaHtml.push('🔧 Tampa traseira em manutenção');}
+    if(st.vidro)    {linhasEntrada.push('Troca de vidro inclusa');linhasEntradaHtml.push('🔳 Troca de vidro inclusa');}
+    if(st.conector) {linhasEntrada.push('Conector de carga em manutenção');linhasEntradaHtml.push('🔌 Conector de carga em manutenção');}
+    if(st.flexpower){linhasEntrada.push('Flex Power em manutenção');linhasEntradaHtml.push('⚡ Flex Power em manutenção');}
+    if(st.flexvolume){linhasEntrada.push('Flex Volume em manutenção');linhasEntradaHtml.push('🔊 Flex Volume em manutenção');}
+    if(st.flash)    {linhasEntrada.push('Flash/Lanterna em manutenção');linhasEntradaHtml.push('🔦 Flash/Lanterna em manutenção');}
+    if(st.auricular){linhasEntrada.push('Auricular em manutenção');linhasEntradaHtml.push('🔈 Auricular em manutenção');}
+    if(st.sensor)   {linhasEntrada.push('Sensor em manutenção');linhasEntradaHtml.push('👁 Sensor em manutenção');}
+    if(st.camfrontc){linhasEntrada.push('Câmera frontal em manutenção');linhasEntradaHtml.push('🤳 Câmera frontal em manutenção');}
   }
 
   const desc=getDesc(labelSaida);
@@ -888,7 +951,7 @@ function fb(txt,ok){
 /* Reset */
 function resetAll(){
   brand='apple';tipo='semi';modo='troca';pag='ambos';dois=false;selChips=new Set();
-  Object.assign(st,{model:null,mem:null,memVenda:null,bat:100,tela:false,cam:false,tam:false});
+  Object.assign(st,{model:null,mem:null,memVenda:null,bat:100,tela:false,cam:false,tam:false,vidro:false,conector:false,flexpower:false,flexvolume:false,flash:false,auricular:false,sensor:false,camfrontc:false});
   document.querySelectorAll('.pbtn,.mbtn-troca,.mbtn-venda').forEach(b=>b.classList.remove('on'));
   ['bb-apple','tb-semi','tb-troca'].forEach(id=>qi(id).classList.add('on'));
   ['bb-garmin','tb-lacr','tb-simples'].forEach(id=>qi(id).classList.remove('on'));
