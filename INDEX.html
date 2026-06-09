@@ -208,6 +208,10 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;heigh
   <div class="card-head"><div class="num">1</div><h2>Aparelho que você está vendendo</h2></div>
   <div class="card-body">
     <div class="field" style="margin-bottom:10px;">
+      <span class="fpre">👤</span>
+      <input class="text-inp" type="text" id="inp-cliente" placeholder="Nome do cliente" oninput="recalc()">
+    </div>
+    <div class="field" style="margin-bottom:10px;">
       <span class="fpre">📱</span>
       <input class="text-inp" type="text" id="inp-nome" placeholder="Ex: iPhone 16 Pro Max" oninput="onNome()">
     </div>
@@ -217,6 +221,8 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;heigh
     </div>
     <div style="font-family:var(--mono);font-size:10px;color:var(--mu);letter-spacing:1px;margin-bottom:8px;">MEMÓRIA DO APARELHO VENDIDO</div>
     <div class="mem-grid" id="grid-mem-venda"></div>
+    <div style="font-family:var(--mono);font-size:10px;color:var(--mu);letter-spacing:1px;margin:14px 0 8px;">COR DO APARELHO</div>
+    <div class="mem-grid" id="grid-cor"></div>
   </div>
 </div>
 
@@ -269,6 +275,8 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;heigh
     <div style="font-family:var(--mono);font-size:10px;color:var(--mu);margin-top:10px;line-height:1.6;">
       Informativo — não altera o valor base da troca.
     </div>
+    <div style="font-family:var(--mono);font-size:10px;color:var(--mu);letter-spacing:1px;margin:14px 0 8px;">COR DO APARELHO DO CLIENTE</div>
+    <div class="mem-grid" id="grid-cor-cliente"></div>
   </div>
 </div>
 
@@ -451,45 +459,117 @@ const TX = {
   16:.1575,17:.162,18:.170
 };
 
-/* Valor base por modelo — memória é informativa */
+/* UPG: valores exatos da planilha */
 const UPG = [
-  // tam: tabela+200 até 14Plus | tabela+250 de 15 a 16Plus | tabela+300 de 16ProMax+
-  {m:'11',        base:700,  bat:200, tela:300,  cam:300,  tam:300,  vidro:300,  conector:230, flexpower:230, flexvolume:230, flash:230, auricular:230, sensor:0,   camfrontc:270, rule:'n'},
-  {m:'11 PRO',    base:1100, bat:200, tela:400,  cam:400,  tam:320,  vidro:300,  conector:380, flexpower:270, flexvolume:270, flash:270, auricular:240, sensor:0,   camfrontc:270, rule:'n'},
-  {m:'11 PRO MAX',base:1200, bat:280, tela:450,  cam:400,  tam:320,  vidro:300,  conector:380, flexpower:270, flexvolume:270, flash:270, auricular:240, sensor:0,   camfrontc:270, rule:'n'},
-  {m:'12',        base:1000, bat:250, tela:400,  cam:350,  tam:320,  vidro:300,  conector:270, flexpower:270, flexvolume:270, flash:240, auricular:240, sensor:0,   camfrontc:270, rule:'h'},
-  {m:'12 MINI',   base:900,  bat:230, tela:380,  cam:350,  tam:320,  vidro:300,  conector:270, flexpower:270, flexvolume:270, flash:240, auricular:240, sensor:0,   camfrontc:270, rule:'h'},
-  {m:'12 PRO',    base:1550, bat:250, tela:400,  cam:560,  tam:320,  vidro:300,  conector:270, flexpower:270, flexvolume:270, flash:240, auricular:240, sensor:0,   camfrontc:270, rule:'h'},
-  {m:'12 PRO MAX',base:1900, bat:300, tela:650,  cam:550,  tam:350,  vidro:330,  conector:300, flexpower:270, flexvolume:270, flash:240, auricular:240, sensor:0,   camfrontc:300, rule:'h'},
-  {m:'13',        base:1600, bat:300, tela:600,  cam:330,  tam:320,  vidro:320,  conector:280, flexpower:270, flexvolume:270, flash:240, auricular:270, sensor:240, camfrontc:350, rule:'h13'},
-  {m:'13 MINI',   base:1400, bat:280, tela:560,  cam:330,  tam:320,  vidro:320,  conector:280, flexpower:270, flexvolume:270, flash:240, auricular:270, sensor:240, camfrontc:350, rule:'h13'},
-  {m:'13 PRO',    base:2100, bat:350, tela:700,  cam:590,  tam:350,  vidro:320,  conector:330, flexpower:270, flexvolume:300, flash:270, auricular:270, sensor:240, camfrontc:350, rule:'h13'},
-  {m:'13 PRO MAX',base:2500, bat:400, tela:750,  cam:590,  tam:380,  vidro:350,  conector:330, flexpower:270, flexvolume:300, flash:270, auricular:270, sensor:240, camfrontc:350, rule:'h13'},
-  {m:'14',        base:1800, bat:400, tela:690,  cam:390,  tam:350,  vidro:320,  conector:300, flexpower:300, flexvolume:280, flash:300, auricular:270, sensor:240, camfrontc:350, rule:'h'},
-  {m:'14 PLUS',   base:2300, bat:400, tela:690,  cam:390,  tam:350,  vidro:320,  conector:300, flexpower:300, flexvolume:280, flash:300, auricular:270, sensor:240, camfrontc:350, rule:'h'},
-  {m:'14 PRO',    base:2600, bat:420, tela:1000, cam:490,  tam:370,  vidro:360,  conector:350, flexpower:300, flexvolume:310, flash:280, auricular:270, sensor:300, camfrontc:350, rule:'h'},
-  {m:'14 PRO MAX',base:2900, bat:420, tela:1100, cam:490,  tam:380,  vidro:380,  conector:350, flexpower:330, flexvolume:330, flash:280, auricular:270, sensor:300, camfrontc:350, rule:'h'},
-  {m:'15',        base:2500, bat:450, tela:950,  cam:480,  tam:400,  vidro:350,  conector:400, flexpower:350, flexvolume:350, flash:390, auricular:320, sensor:320, camfrontc:400, rule:'h'},
-  {m:'15 PLUS',   base:2850, bat:490, tela:950,  cam:480,  tam:400,  vidro:350,  conector:400, flexpower:350, flexvolume:350, flash:390, auricular:320, sensor:320, camfrontc:400, rule:'h'},
-  {m:'15 PRO',    base:3000, bat:490, tela:1100, cam:530,  tam:450,  vidro:450,  conector:430, flexpower:360, flexvolume:360, flash:370, auricular:320, sensor:350, camfrontc:400, rule:'h'},
-  {m:'15 PRO MAX',base:3700, bat:490, tela:1200, cam:580,  tam:450,  vidro:500,  conector:450, flexpower:380, flexvolume:370, flash:370, auricular:320, sensor:350, camfrontc:400, rule:'h'},
-  {m:'16',        base:3300, bat:490, tela:1200, cam:570,  tam:430,  vidro:500,  conector:450, flexpower:350, flexvolume:350, flash:400, auricular:390, sensor:350, camfrontc:500, rule:'h'},
-  {m:'16 PLUS',   base:3700, bat:490, tela:1200, cam:570,  tam:430,  vidro:500,  conector:450, flexpower:350, flexvolume:350, flash:400, auricular:390, sensor:350, camfrontc:500, rule:'h'},
-  {m:'16 PRO',    base:4000, bat:490, tela:1200, cam:620,  tam:530,  vidro:550,  conector:480, flexpower:370, flexvolume:370, flash:400, auricular:400, sensor:350, camfrontc:590, rule:'h'},
-  {m:'16 PRO MAX',base:4900, bat:600, tela:1550, cam:650,  tam:530,  vidro:550,  conector:540, flexpower:420, flexvolume:420, flash:480, auricular:450, sensor:400, camfrontc:640, rule:'h'},
-  {m:'17',        base:4200, bat:500, tela:1300, cam:650,  tam:550,  vidro:600,  conector:540, flexpower:420, flexvolume:420, flash:480, auricular:450, sensor:400, camfrontc:640, rule:'h'},
-  {m:'17 AIR',    base:4800, bat:500, tela:1300, cam:650,  tam:550,  vidro:600,  conector:540, flexpower:420, flexvolume:420, flash:480, auricular:450, sensor:400, camfrontc:640, rule:'h'},
-  {m:'17 PRO',    base:5500, bat:550, tela:1400, cam:650,  tam:500,  vidro:700,  conector:540, flexpower:420, flexvolume:420, flash:480, auricular:450, sensor:400, camfrontc:640, rule:'h'},
-  {m:'17 PRO MAX',base:6200, bat:600, tela:1600, cam:650,  tam:500,  vidro:700,  conector:540, flexpower:420, flexvolume:420, flash:480, auricular:450, sensor:400, camfrontc:640, rule:'h'},
+  // ── 11 ──
+  {m:'11',         mem:'64GB',   base:700,  bat:200, tela:300,  cam:250,  tam:200,  vidro:300,  conector:230, flexpower:230, flexvolume:230, flash:230, auricular:230, sensor:0,   camfrontc:200, rule:'n'},
+  {m:'11',         mem:'128GB',  base:950,  bat:200, tela:300,  cam:250,  tam:200,  vidro:300,  conector:230, flexpower:230, flexvolume:230, flash:230, auricular:230, sensor:0,   camfrontc:200, rule:'n'},
+  // ── 11 PRO ──
+  {m:'11 PRO',     mem:'64GB',   base:1100, bat:200, tela:400,  cam:500,  tam:250,  vidro:300,  conector:380, flexpower:270, flexvolume:270, flash:270, auricular:240, sensor:0,   camfrontc:200, rule:'n'},
+  {m:'11 PRO',     mem:'256GB',  base:1300, bat:200, tela:400,  cam:500,  tam:250,  vidro:300,  conector:380, flexpower:270, flexvolume:270, flash:270, auricular:240, sensor:0,   camfrontc:200, rule:'n'},
+  // ── 11 PRO MAX ──
+  {m:'11 PRO MAX', mem:'64GB',   base:1200, bat:200, tela:450,  cam:500,  tam:280,  vidro:300,  conector:380, flexpower:270, flexvolume:270, flash:270, auricular:240, sensor:0,   camfrontc:250, rule:'n'},
+  {m:'11 PRO MAX', mem:'256GB',  base:1350, bat:200, tela:450,  cam:500,  tam:280,  vidro:300,  conector:380, flexpower:270, flexvolume:270, flash:270, auricular:240, sensor:0,   camfrontc:250, rule:'n'},
+  // ── 12 ──
+  {m:'12',         mem:'64GB',   base:1000, bat:250, tela:400,  cam:520,  tam:280,  vidro:300,  conector:270, flexpower:270, flexvolume:270, flash:240, auricular:240, sensor:0,   camfrontc:250, rule:'n'},
+  {m:'12',         mem:'128GB',  base:1300, bat:250, tela:400,  cam:520,  tam:280,  vidro:300,  conector:270, flexpower:270, flexvolume:270, flash:240, auricular:240, sensor:0,   camfrontc:250, rule:'n'},
+  {m:'12',         mem:'256GB',  base:1500, bat:250, tela:400,  cam:520,  tam:280,  vidro:300,  conector:270, flexpower:270, flexvolume:270, flash:240, auricular:240, sensor:0,   camfrontc:250, rule:'n'},
+  // ── 12 MINI ──
+  {m:'12 MINI',    mem:'64GB',   base:900,  bat:250, tela:400,  cam:520,  tam:280,  vidro:300,  conector:270, flexpower:270, flexvolume:270, flash:240, auricular:240, sensor:0,   camfrontc:250, rule:'n'},
+  {m:'12 MINI',    mem:'128GB',  base:1100, bat:250, tela:400,  cam:520,  tam:280,  vidro:300,  conector:270, flexpower:270, flexvolume:270, flash:240, auricular:240, sensor:0,   camfrontc:250, rule:'n'},
+  // ── 12 PRO ──
+  {m:'12 PRO',     mem:'128GB',  base:1550, bat:250, tela:400,  cam:650,  tam:280,  vidro:300,  conector:270, flexpower:270, flexvolume:270, flash:240, auricular:240, sensor:0,   camfrontc:280, rule:'n'},
+  {m:'12 PRO',     mem:'256GB',  base:1750, bat:250, tela:400,  cam:650,  tam:280,  vidro:300,  conector:270, flexpower:270, flexvolume:270, flash:240, auricular:240, sensor:0,   camfrontc:280, rule:'n'},
+  // ── 12 PRO MAX ──
+  {m:'12 PRO MAX', mem:'128GB',  base:1900, bat:300, tela:650,  cam:650,  tam:330,  vidro:330,  conector:300, flexpower:270, flexvolume:270, flash:240, auricular:240, sensor:0,   camfrontc:330, rule:'n'},
+  {m:'12 PRO MAX', mem:'256GB',  base:2100, bat:300, tela:650,  cam:650,  tam:330,  vidro:330,  conector:300, flexpower:270, flexvolume:270, flash:240, auricular:240, sensor:0,   camfrontc:330, rule:'n'},
+  // ── 13 ──
+  {m:'13',         mem:'128GB',  base:1600, bat:300, tela:600,  cam:600,  tam:320,  vidro:320,  conector:280, flexpower:270, flexvolume:270, flash:240, auricular:270, sensor:240, camfrontc:350, rule:'h13'},
+  {m:'13',         mem:'256GB',  base:1750, bat:300, tela:600,  cam:600,  tam:320,  vidro:320,  conector:280, flexpower:270, flexvolume:270, flash:240, auricular:270, sensor:240, camfrontc:350, rule:'h13'},
+  // ── 13 MINI ──
+  {m:'13 MINI',    mem:'128GB',  base:1400, bat:300, tela:600,  cam:600,  tam:320,  vidro:320,  conector:280, flexpower:270, flexvolume:270, flash:240, auricular:270, sensor:240, camfrontc:350, rule:'h13'},
+  // ── 13 PRO ──
+  {m:'13 PRO',     mem:'128GB',  base:2100, bat:350, tela:700,  cam:650,  tam:350,  vidro:320,  conector:330, flexpower:270, flexvolume:300, flash:270, auricular:270, sensor:240, camfrontc:360, rule:'h13'},
+  {m:'13 PRO',     mem:'256GB',  base:2350, bat:350, tela:700,  cam:650,  tam:350,  vidro:320,  conector:330, flexpower:270, flexvolume:300, flash:270, auricular:270, sensor:240, camfrontc:360, rule:'h13'},
+  // ── 13 PRO MAX ──
+  {m:'13 PRO MAX', mem:'128GB',  base:2500, bat:400, tela:750,  cam:700,  tam:380,  vidro:350,  conector:330, flexpower:270, flexvolume:300, flash:270, auricular:270, sensor:240, camfrontc:370, rule:'h13'},
+  {m:'13 PRO MAX', mem:'256GB',  base:2700, bat:400, tela:750,  cam:700,  tam:380,  vidro:350,  conector:330, flexpower:270, flexvolume:300, flash:270, auricular:270, sensor:240, camfrontc:370, rule:'h13'},
+  // ── 14 ──
+  {m:'14',         mem:'128GB',  base:1800, bat:400, tela:690,  cam:700,  tam:430,  vidro:320,  conector:300, flexpower:300, flexvolume:280, flash:300, auricular:270, sensor:240, camfrontc:430, rule:'h'},
+  {m:'14',         mem:'256GB',  base:2000, bat:400, tela:690,  cam:700,  tam:430,  vidro:320,  conector:300, flexpower:300, flexvolume:280, flash:300, auricular:270, sensor:240, camfrontc:430, rule:'h'},
+  // ── 14 PLUS ──
+  {m:'14 PLUS',    mem:'128GB',  base:2300, bat:400, tela:690,  cam:380,  tam:430,  vidro:320,  conector:300, flexpower:300, flexvolume:280, flash:300, auricular:270, sensor:240, camfrontc:430, rule:'h'},
+  {m:'14 PLUS',    mem:'256GB',  base:2500, bat:400, tela:690,  cam:380,  tam:430,  vidro:320,  conector:300, flexpower:300, flexvolume:280, flash:300, auricular:270, sensor:240, camfrontc:430, rule:'h'},
+  // ── 14 PRO ──
+  {m:'14 PRO',     mem:'128GB',  base:2600, bat:420, tela:1000, cam:770,  tam:430,  vidro:360,  conector:350, flexpower:300, flexvolume:310, flash:280, auricular:270, sensor:300, camfrontc:430, rule:'h'},
+  {m:'14 PRO',     mem:'256GB',  base:2750, bat:420, tela:1000, cam:770,  tam:430,  vidro:360,  conector:350, flexpower:300, flexvolume:310, flash:280, auricular:270, sensor:300, camfrontc:430, rule:'h'},
+  // ── 14 PRO MAX ──
+  {m:'14 PRO MAX', mem:'128GB',  base:2900, bat:420, tela:1100, cam:770,  tam:430,  vidro:380,  conector:350, flexpower:330, flexvolume:330, flash:280, auricular:270, sensor:300, camfrontc:430, rule:'h'},
+  {m:'14 PRO MAX', mem:'256GB',  base:3150, bat:420, tela:1100, cam:770,  tam:430,  vidro:380,  conector:350, flexpower:330, flexvolume:330, flash:280, auricular:270, sensor:300, camfrontc:430, rule:'h'},
+  // ── 15 ──
+  {m:'15',         mem:'128GB',  base:2500, bat:450, tela:950,  cam:990,  tam:530,  vidro:350,  conector:400, flexpower:350, flexvolume:350, flash:390, auricular:320, sensor:320, camfrontc:530, rule:'h'},
+  {m:'15',         mem:'256GB',  base:2650, bat:450, tela:950,  cam:990,  tam:530,  vidro:350,  conector:400, flexpower:350, flexvolume:350, flash:390, auricular:320, sensor:320, camfrontc:530, rule:'h'},
+  // ── 15 PLUS ──
+  {m:'15 PLUS',    mem:'128GB',  base:2800, bat:490, tela:950,  cam:950,  tam:530,  vidro:350,  conector:400, flexpower:350, flexvolume:350, flash:390, auricular:320, sensor:320, camfrontc:530, rule:'h'},
+  {m:'15 PLUS',    mem:'256GB',  base:2950, bat:490, tela:950,  cam:950,  tam:530,  vidro:350,  conector:400, flexpower:350, flexvolume:350, flash:390, auricular:320, sensor:320, camfrontc:530, rule:'h'},
+  // ── 15 PRO ──
+  {m:'15 PRO',     mem:'128GB',  base:3000, bat:490, tela:1100, cam:1100, tam:530,  vidro:450,  conector:430, flexpower:360, flexvolume:360, flash:370, auricular:320, sensor:350, camfrontc:530, rule:'h'},
+  {m:'15 PRO',     mem:'256GB',  base:3300, bat:490, tela:1100, cam:1100, tam:530,  vidro:450,  conector:430, flexpower:360, flexvolume:360, flash:370, auricular:320, sensor:350, camfrontc:530, rule:'h'},
+  // ── 15 PRO MAX ──
+  {m:'15 PRO MAX', mem:'256GB',  base:3700, bat:490, tela:1200, cam:1150, tam:530,  vidro:500,  conector:450, flexpower:380, flexvolume:370, flash:370, auricular:320, sensor:350, camfrontc:530, rule:'t'},
+  {m:'15 PRO MAX', mem:'512GB',  base:3900, bat:490, tela:1200, cam:1150, tam:530,  vidro:500,  conector:450, flexpower:380, flexvolume:370, flash:370, auricular:320, sensor:350, camfrontc:530, rule:'t'},
+  // ── 16 ──
+  {m:'16',         mem:'128GB',  base:3200, bat:490, tela:1200, cam:1150, tam:580,  vidro:500,  conector:450, flexpower:350, flexvolume:350, flash:400, auricular:390, sensor:350, camfrontc:580, rule:'t'},
+  {m:'16',         mem:'256GB',  base:3500, bat:490, tela:1200, cam:1150, tam:580,  vidro:500,  conector:450, flexpower:350, flexvolume:350, flash:400, auricular:390, sensor:350, camfrontc:580, rule:'t'},
+  // ── 16 PLUS ──
+  {m:'16 PLUS',    mem:'128GB',  base:3700, bat:490, tela:1200, cam:1150, tam:580,  vidro:500,  conector:450, flexpower:350, flexvolume:350, flash:400, auricular:390, sensor:350, camfrontc:580, rule:'t'},
+  {m:'16 PLUS',    mem:'256GB',  base:3950, bat:490, tela:1200, cam:1150, tam:580,  vidro:500,  conector:450, flexpower:350, flexvolume:350, flash:400, auricular:390, sensor:350, camfrontc:580, rule:'t'},
+  // ── 16 PRO ──
+  {m:'16 PRO',     mem:'128GB',  base:3900, bat:490, tela:1200, cam:1150, tam:630,  vidro:550,  conector:480, flexpower:370, flexvolume:370, flash:400, auricular:400, sensor:350, camfrontc:630, rule:'t'},
+  {m:'16 PRO',     mem:'256GB',  base:4250, bat:490, tela:1200, cam:1150, tam:630,  vidro:550,  conector:480, flexpower:370, flexvolume:370, flash:400, auricular:400, sensor:350, camfrontc:630, rule:'t'},
+  // ── 16 PRO MAX ──
+  {m:'16 PRO MAX', mem:'256GB',  base:4850, bat:600, tela:1550, cam:1150, tam:630,  vidro:550,  conector:540, flexpower:420, flexvolume:420, flash:480, auricular:450, sensor:400, camfrontc:630, rule:'t'},
+  {m:'16 PRO MAX', mem:'512GB',  base:5150, bat:600, tela:1550, cam:1150, tam:630,  vidro:550,  conector:540, flexpower:420, flexvolume:420, flash:480, auricular:450, sensor:400, camfrontc:630, rule:'t'},
+  // ── 17 ──
+  {m:'17',         mem:'128GB',  base:4200, bat:500, tela:1300, cam:650,  tam:550,  vidro:600,  conector:540, flexpower:420, flexvolume:420, flash:480, auricular:450, sensor:400, camfrontc:640, rule:'t'},
+  {m:'17',         mem:'256GB',  base:4500, bat:500, tela:1300, cam:650,  tam:550,  vidro:600,  conector:540, flexpower:420, flexvolume:420, flash:480, auricular:450, sensor:400, camfrontc:640, rule:'t'},
+  // ── 17 AIR ──
+  {m:'17 AIR',     mem:'256GB',  base:4800, bat:500, tela:1300, cam:650,  tam:550,  vidro:600,  conector:540, flexpower:420, flexvolume:420, flash:480, auricular:450, sensor:400, camfrontc:640, rule:'t'},
+  {m:'17 AIR',     mem:'512GB',  base:5100, bat:500, tela:1300, cam:650,  tam:550,  vidro:600,  conector:540, flexpower:420, flexvolume:420, flash:480, auricular:450, sensor:400, camfrontc:640, rule:'t'},
+  // ── 17 PRO ──
+  {m:'17 PRO',     mem:'256GB',  base:5500, bat:550, tela:1400, cam:650,  tam:500,  vidro:700,  conector:540, flexpower:420, flexvolume:420, flash:480, auricular:450, sensor:400, camfrontc:640, rule:'t'},
+  {m:'17 PRO',     mem:'512GB',  base:5900, bat:550, tela:1400, cam:650,  tam:500,  vidro:700,  conector:540, flexpower:420, flexvolume:420, flash:480, auricular:450, sensor:400, camfrontc:640, rule:'t'},
+  // ── 17 PRO MAX ──
+  {m:'17 PRO MAX', mem:'256GB',  base:6200, bat:600, tela:1600, cam:650,  tam:500,  vidro:700,  conector:540, flexpower:420, flexvolume:420, flash:480, auricular:450, sensor:400, camfrontc:640, rule:'t'},
+  {m:'17 PRO MAX', mem:'512GB',  base:6600, bat:600, tela:1600, cam:650,  tam:500,  vidro:700,  conector:540, flexpower:420, flexvolume:420, flash:480, auricular:450, sensor:400, camfrontc:640, rule:'t'},
+];
+
+const CORES = [
+  {nome:'Preto',     emoji:'⚫'},
+  {nome:'Branco',    emoji:'⚪'},
+  {nome:'Azul',      emoji:'🔵'},
+  {nome:'Azul Titânio', emoji:'🔷'},
+  {nome:'Verde',     emoji:'🟢'},
+  {nome:'Roxo',      emoji:'🟣'},
+  {nome:'Rosa',      emoji:'🩷'},
+  {nome:'Vermelho',  emoji:'🔴'},
+  {nome:'Amarelo',   emoji:'🟡'},
+  {nome:'Laranja',   emoji:'🟠'},
+  {nome:'Cinza',     emoji:'🩶'},
+  {nome:'Dourado',   emoji:'🟤'},
+  {nome:'Prata',     emoji:'🔘'},
+  {nome:'Titânio',   emoji:'🩫'},
+  {nome:'Natural',   emoji:'🤍'},
+  {nome:'Areia',     emoji:'🟫'},
 ];
 
 const MEM_OPTS = ['64GB','128GB','256GB','512GB','1TB'];
-const MODELS   = UPG.map(d=>d.m);
+const MODELS   = [...new Set(UPG.map(d=>d.m))];
 
 /* Estado */
 let brand='apple', tipo='semi', modo='troca', pag='ambos', dois=false;
 let selChips=new Set();
-const st={model:null,mem:null,memVenda:null,bat:100,tela:false,cam:false,tam:false,vidro:false,conector:false,flexpower:false,flexvolume:false,flash:false,auricular:false,sensor:false,camfrontc:false};
+const st={model:null,mem:null,memVenda:null,cores:new Set(),coresCliente:new Set(),bat:100,tela:false,cam:false,tam:false,vidro:false,conector:false,flexpower:false,flexvolume:false,flash:false,auricular:false,sensor:false,camfrontc:false};
 
 /* Garantia */
 function getGarantia(nome){
@@ -607,10 +687,27 @@ function buildMemVenda(){
   });
 }
 
-/* Memória do aparelho da TROCA — aparece após selecionar modelo */
+/* Cor do aparelho vendido — seleção múltipla */
+function buildCor(){
+  const g=qi('grid-cor');g.innerHTML='';
+  CORES.forEach(c=>{
+    const b=document.createElement('button');
+    b.className='mbtn mbtn-cor'+(st.cores.has(c.nome)?' on':'');
+    b.textContent=c.emoji+' '+c.nome;
+    b.id='cor_'+c.nome;
+    b.onclick=()=>{
+      if(st.cores.has(c.nome)) st.cores.delete(c.nome);
+      else st.cores.add(c.nome);
+      b.classList.toggle('on', st.cores.has(c.nome));
+      recalc();
+    };
+    g.appendChild(b);
+  });
+}
 function buildMem(){
   const g=qi('grid-mem');g.innerHTML='';
-  MEM_OPTS.forEach(mem=>{
+  const mems=UPG.filter(d=>d.m===st.model).map(d=>d.mem);
+  mems.forEach(mem=>{
     const b=document.createElement('button');
     b.className='mbtn mbtn-troca'+(st.mem===mem?' on':'');
     b.textContent=mem;b.id='mm_'+mem;
@@ -634,6 +731,424 @@ function buildMem(){
       if(d.sensor) qi('disc-sensor').textContent='− R$ '+fmt(d.sensor);
       else qi('disc-sensor').textContent='N/D neste modelo';
       qi('disc-camfrontc').textContent='− R$ '+fmt(d.camfrontc);
+      st.coresCliente=new Set();
+      document.querySelectorAll('.mbtn-cor-cli').forEach(x=>x.classList.remove('on'));
+      buildCorCliente();
+      show('card-bat');show('card-cond');recalc();
+    };
+    g.appendChild(b);
+  });
+}
+
+/* Bateria */
+/* Cor do aparelho do CLIENTE — seleção múltipla */
+function buildCorCliente(){
+  const g=qi('grid-cor-cliente');if(!g)return;g.innerHTML='';
+  CORES.forEach(c=>{
+    const b=document.createElement('button');
+    b.className='mbtn mbtn-cor-cli'+(st.coresCliente.has(c.nome)?' on':'');
+    b.textContent=c.emoji+' '+c.nome;
+    b.id='corcli_'+c.nome;
+    b.onclick=()=>{
+      if(st.coresCliente.has(c.nome)) st.coresCliente.delete(c.nome);
+      else st.coresCliente.add(c.nome);
+      b.classList.toggle('on', st.coresCliente.has(c.nome));
+      recalc();
+    };
+    g.appendChild(b);
+  });
+}
+
+qi('sl-bat').addEventListener('input',function(){st.bat=+this.value;batDisp(st.bat);recalc();});
+function batDisp(v){
+  const el=qi('val-bat');el.textContent=v+'%';
+  el.style.color=v>=87?'var(--acc)':v>=84?'var(--yl)':'var(--red)';
+}
+function setBatNote(d){
+  const n=qi('note-bat');if(!d){n.textContent='';return;}
+  if(d.rule==='t')   n.innerHTML=`⚠️ Abaixo 83% desconta <strong style="color:var(--yl)">R$ ${fmt(d.bat)}</strong>. 84–86% desconta 1/3 do valor.`;
+  else if(d.rule==='h13') n.innerHTML=`⚠️ Abaixo 83% desconta <strong style="color:var(--yl)">R$ ${fmt(d.bat)}</strong>. 84–86% desconta metade.`;
+  else if(d.rule==='h') n.innerHTML=`⚠️ Abaixo 83% desconta <strong style="color:var(--yl)">R$ ${fmt(d.bat)}</strong>. 84–86% desconta metade.`;
+  else n.innerHTML=`Abaixo 84% desconta <strong style="color:var(--yl)">R$ ${fmt(d.bat)}</strong>.`;
+}
+
+/* Condições */
+function togCond(k){st[k]=!st[k];qi('ctog-'+k).classList.toggle('on',st[k]);recalc();}
+
+/* Cálculo */
+function entry(){ return UPG.find(d=>d.m===st.model && d.mem===st.mem); }
+
+function calcBat(d,b){
+  if(b>=87) return 0;
+  if(d.rule==='n') return b<84?d.bat:0;
+  if(d.rule==='t') return (b>=84&&b<=86)?Math.round(d.bat/3):d.bat;
+  // h e h13: metade em 84-86
+  return (b>=84&&b<=86)?Math.round(d.bat/2):d.bat;
+}
+function calcP(base){
+  const p={};
+  for(let n=1;n<=18;n++){const tot=base>0?base/(1-TX[n]):0;p[n]={tot,parc:tot/n};}
+  return p;
+}
+
+function recalc(){
+  const preco=parseFloat(qi('inp-preco').value)||0;
+  const entrada=parseFloat(qi('inp-entrada').value)||0;
+  if(brand==='garmin'||modo==='simples'){
+    const rest=Math.max(0,preco-entrada);
+    renderResult(null,preco,0,0,preco,preco,calcP(rest),[],entrada);
+    return;
+  }
+  if(!st.model||!st.mem) return;
+  const d=entry();if(!d) return;
+  const dBat=calcBat(d,st.bat);
+  const dTela=st.tela?d.tela:0;
+  const dCam=st.cam?d.cam:0;
+  const dTam=st.tam?d.tam:0;
+  const dVidro=st.vidro?d.vidro:0;
+  const dConector=st.conector?d.conector:0;
+  const dFlexpower=st.flexpower?d.flexpower:0;
+  const dFlexvolume=st.flexvolume?d.flexvolume:0;
+  const dFlash=st.flash?d.flash:0;
+  const dAuricular=st.auricular?d.auricular:0;
+  const dSensor=st.sensor?(d.sensor||0):0;
+  const dCamfrontc=st.camfrontc?d.camfrontc:0;
+  const totD=dBat+dTela+dCam+dTam+dVidro+dConector+dFlexpower+dFlexvolume+dFlash+dAuricular+dSensor+dCamfrontc;
+  const vTroca=Math.max(0,d.base-totD);
+  const diff=Math.max(0,preco-vTroca)+100; // +R$100 silencioso no modo troca
+  const rest=Math.max(0,diff-entrada);
+  const warns=[];
+  if(d.rule==='t'&&st.bat>=84&&st.bat<=86)
+    warns.push(`📋 Bateria ${st.bat}%: 1/3 do desconto de bateria aplicado.`);
+  else if((d.rule==='h'||d.rule==='h13')&&st.bat>=84&&st.bat<=86)
+    warns.push(`📋 Bateria ${st.bat}%: metade do desconto de bateria aplicada.`);
+  renderResult(d,preco,vTroca,totD,diff,diff,calcP(rest),warns,entrada);
+}
+
+/* Blocos pagamento */
+function buildPagData(aVista,p,entrada){
+  const showParc=pag==='ambos'||pag==='parc';
+  const showVista=pag==='ambos'||pag==='avista';
+  const temEntr=entrada>0&&pag==='parc';
+  const rows=[];let msg='';
+
+  if(showParc){
+    if(dois&&pag==='parc'){
+      const n1=parseInt(qi('c1-parc').value)||12;
+      const n2=parseInt(qi('c2-parc').value)||6;
+      const v1=parseFloat(qi('c1-val').value)||0;
+      const v2=parseFloat(qi('c2-val').value)||0;
+      const p1=v1>0?(v1/(1-TX[n1]))/n1:0;
+      const p2=v2>0?(v2/(1-TX[n2]))/n2:0;
+      if(temEntr){rows.push({type:'entrada',label:'Entrada PIX/Dinheiro',val:brl(entrada)});msg+=`\nEntrada (PIX/Dinheiro): ${brl(entrada)}\n\n`;}
+      rows.push({type:'sep',label:'Parcelado em 2 cartões'});
+      msg+=`\nParcelado em 2 cartões:\n`;
+      if(p1>0){rows.push({type:'parc',label:`Cartão 1 — ${n1}x`,val:brl(p1)});msg+=`Cartão 1: ${n1}x de ${brl(p1)}\n`;}
+      if(p2>0){rows.push({type:'parc',label:`Cartão 2 — ${n2}x`,val:brl(p2)});msg+=`Cartão 2: ${n2}x de ${brl(p2)}\n`;}
+    } else {
+      const sels=[...selChips].sort((a,b)=>a-b);
+      if(sels.length>0){
+        if(temEntr){
+          rows.push({type:'entrada',label:'Entrada PIX/Dinheiro',val:brl(entrada)});
+          rows.push({type:'sep',label:'Restante no cartão'});
+          msg+=`\nEntrada (PIX/Dinheiro): ${brl(entrada)}\nParcelado no cartão (restante):\n`;
+        } else {
+          rows.push({type:'sep',label:'Parcelado no cartão'});
+          msg+=`\nParcelado no cartão:\n`;
+        }
+        sels.forEach(n=>{
+          const v=p[n]?p[n].parc:0;
+          if(v<=0) return;
+          rows.push({type:'parc',label:`${n}x de`,val:brl(v)});
+          msg+=`${n}x de ${brl(v)}\n`;
+        });
+      }
+    }
+  }
+  if(showVista&&aVista>0){
+    rows.push({type:'vista',label:'À vista com desconto',val:brl(aVista)});
+    msg+=`\n💰 À vista com desconto: ${brl(aVista)}`;
+  }
+  return {rows,msg};
+}
+
+/* Render */
+function renderResult(d,preco,vTroca,totD,diff,aVista,p,warns,entrada){
+  qi('el-empty').classList.add('hidden');
+  const area=qi('el-result');area.classList.remove('hidden');
+
+  const cliente = (qi('inp-cliente').value||'').trim();
+  const nome=(qi('inp-nome').value||'').trim();
+  const memVendaTag=st.memVenda?` ${st.memVenda}`:'';
+  const coresArr=[...st.cores];
+  const corTag=coresArr.length>0?' — '+coresArr.join(' / '):'';  const memTrocaTag=st.mem?` ${st.mem}`:'';
+
+  // Aparelho de saída (vendido)
+  const labelSaida=nome?(nome+memVendaTag+corTag):(brand==='garmin'?'Garmin':(d?`iPhone ${d.m}`:'iPhone'));
+
+  // Saudação personalizada
+  const saudacao=cliente?`${cliente}, segue seu orçamento personalizado! 📱\n\n`:'';
+
+  // Aparelho de entrada (troca)
+  let linhasEntrada=[];
+  let linhasEntradaHtml=[];
+  if(d&&modo==='troca'){
+    const modeloEntrada=`iPhone ${d.m}${memTrocaTag}`;
+    const coresClienteArr=[...st.coresCliente];
+    const corClienteTag=coresClienteArr.length>0?' — '+coresClienteArr.join(' / '):'';
+    linhasEntrada.push(modeloEntrada+corClienteTag);
+    linhasEntradaHtml.push(`<strong>${esc(modeloEntrada+corClienteTag)}</strong>`);
+
+    // Bateria
+    if(st.bat<80){
+      const batLinha=`Bateria em manutenção — ${st.bat}%`;
+      linhasEntrada.push(batLinha);
+      linhasEntradaHtml.push(`🔧 ${esc(batLinha)}`);
+    } else {
+      const batLinha=`Bateria: ${st.bat}%`;
+      linhasEntrada.push(batLinha);
+      linhasEntradaHtml.push(`🔋 ${esc(batLinha)}`);
+    }
+
+    // Peças com defeito
+    if(st.tela)     {linhasEntrada.push('Tela em manutenção');linhasEntradaHtml.push('🔧 Tela em manutenção');}
+    if(st.cam)      {linhasEntrada.push('Câmera traseira em manutenção');linhasEntradaHtml.push('🔧 Câmera traseira em manutenção');}
+    if(st.tam)      {linhasEntrada.push('Tampa traseira em manutenção');linhasEntradaHtml.push('🔧 Tampa traseira em manutenção');}
+    if(st.vidro)    {linhasEntrada.push('Troca de vidro inclusa');linhasEntradaHtml.push('🔳 Troca de vidro inclusa');}
+    if(st.conector) {linhasEntrada.push('Conector de carga em manutenção');linhasEntradaHtml.push('🔌 Conector de carga em manutenção');}
+    if(st.flexpower){linhasEntrada.push('Flex Power em manutenção');linhasEntradaHtml.push('⚡ Flex Power em manutenção');}
+    if(st.flexvolume){linhasEntrada.push('Flex Volume em manutenção');linhasEntradaHtml.push('🔊 Flex Volume em manutenção');}
+    if(st.flash)    {linhasEntrada.push('Flash/Lanterna em manutenção');linhasEntradaHtml.push('🔦 Flash/Lanterna em manutenção');}
+    if(st.auricular){linhasEntrada.push('Auricular em manutenção');linhasEntradaHtml.push('🔈 Auricular em manutenção');}
+    if(st.sensor)   {linhasEntrada.push('Sensor em manutenção');linhasEntradaHtml.push('👁 Sensor em manutenção');}
+    if(st.camfrontc){linhasEntrada.push('Câmera frontal em manutenção');linhasEntradaHtml.push('🤳 Câmera frontal em manutenção');}
+  }
+
+  const desc=getDesc(labelSaida);
+  const temPreco=preco>0;
+
+  const {rows,msg:pagMsg}=buildPagData(temPreco?aVista:0,p,entrada||0);
+
+  /* ── RESUMO INTERNO ── */
+  let resumoHtml='';
+  if(d&&brand==='apple'&&modo==='troca'){
+    const memBadge=st.mem?` <span class="badge badge-acc">${st.mem}</span>`:'';
+    resumoHtml=`<div class="summary">
+      <div class="sum-title">RESUMO INTERNO — VENDEDOR</div>
+      <div class="sum-body">
+        <div class="sum-row"><span class="sum-key">Aparelho da troca</span><span class="sum-val">${esc(d.m)}${memBadge}</span></div>
+        <div class="sum-row"><span class="sum-key">Bateria</span>
+          <span class="sum-val" style="color:${st.bat>=87?'var(--acc)':st.bat>=84?'var(--yl)':'var(--red)'}">${st.bat}%</span></div>
+        <div class="sum-row"><span class="sum-key">Valor base tabela</span><span class="sum-val">${brl(d.base)}</span></div>
+        ${totD>0?`<div class="sum-row"><span class="sum-key">Descontos aplicados</span>
+          <span class="sum-val badge badge-red">− ${brl(totD)}</span></div>`:''}
+        <hr class="sum-div">
+        <div class="sum-row">
+          <span class="sum-key">✅ Você paga pela troca</span>
+          <span class="sum-val" style="color:var(--or);font-size:15px">${brl(vTroca)}</span>
+        </div>
+        ${temPreco?`<hr class="sum-div">
+        <div class="sum-row"><span class="sum-key">Preço de venda</span><span class="sum-val">${brl(preco)}</span></div>
+        <div class="sum-row">
+          <span class="sum-key">💳 Cliente paga a diferença</span>
+          <span class="sum-val" style="color:var(--acc);font-size:16px">${brl(diff)}</span>
+        </div>`:''}
+      </div>
+    </div>`;
+  }
+
+  /* ── BLOCO PAGAMENTO ── */
+  let pagHtml='';
+  if(rows.length>0&&temPreco){
+    let rowsHtml='';
+    rows.forEach(r=>{
+      if(r.type==='sep'){
+        rowsHtml+=`<div class="pag-sep">${r.label.toUpperCase()}</div>`;
+      } else if(r.type==='entrada'){
+        rowsHtml+=`<div class="pag-row"><span class="pk">${r.label}</span><span class="pv-gold">${r.val}</span></div>`;
+      } else if(r.type==='vista'){
+        rowsHtml+=`<div class="pag-row"><span class="pk">💰 ${r.label}</span><span class="pv-vista">${r.val}</span></div>`;
+      } else {
+        rowsHtml+=`<div class="pag-row"><span class="pk">${r.label}</span><span class="pv">${r.val}</span></div>`;
+      }
+    });
+    pagHtml=`<div class="pag-block">
+      <div class="pag-title">FORMAS DE PAGAMENTO</div>
+      <div class="pag-body">${rowsHtml}</div>
+    </div>`;
+  }
+
+  /* ── PREVIEW MENSAGEM ── */
+  // Monta linhas de pagamento
+  let prevPagLines='';
+  let msgPagLines='';
+  rows.forEach(r=>{
+    if(r.type==='sep'){prevPagLines+=`\n<strong>${r.label}:</strong>\n`;msgPagLines+=`\n${r.label}:\n`;}
+    else if(r.type==='entrada'){prevPagLines+=`💵 ${r.label}: <strong>${r.val}</strong>\n`;msgPagLines+=`💵 ${r.label}: ${r.val}\n`;}
+    else if(r.type==='vista'){prevPagLines+=`💰 ${r.label}: <strong>${r.val}</strong>`;msgPagLines+=`💰 ${r.label}: ${r.val}`;}
+    else{prevPagLines+=`${r.label} <strong>${r.val}</strong>\n`;msgPagLines+=`${r.label} ${r.val}\n`;}
+  });
+
+  // Bloco saída
+  const separador='─────────────────────';
+  let prevText='';
+  let msgCopyText='';
+
+  // Bloco apresentação da loja
+  const blocoLoja = [
+    `🏪 <strong>SIMONCINI PHONES</strong>`,
+    `⭐ A loja mais bem avaliada da região`,
+    `🏬 Loja física — venha nos visitar!`,
+    `⚡ Entrega e retirada rápida`,
+    modo==='troca'?`📲 Auxiliamos na transferência de dados`:null,
+  ].filter(Boolean);
+
+  const blocoLojaMsg = [
+    `🏪 SIMONCINI PHONES`,
+    `⭐ A loja mais bem avaliada da região`,
+    `🏬 Loja física — venha nos visitar!`,
+    `⚡ Entrega e retirada rápida`,
+    modo==='troca'?`📲 Auxiliamos na transferência de dados`:null,
+  ].filter(Boolean);
+
+  if(modo==='troca'&&d){
+    // Saudação
+    prevText+=saudacao?`<strong>${esc(saudacao.trim())}</strong>\n\n`:'';
+    msgCopyText+=saudacao;
+
+    // Loja
+    prevText+=blocoLoja.join('\n')+'\n';
+    msgCopyText+=blocoLojaMsg.join('\n')+'\n';
+
+    // Saída
+    prevText+=`\n${separador}\n`;
+    prevText+=`📤 <strong>APARELHO DE SAÍDA</strong>\n`;
+    prevText+=`${separador}\n`;
+    prevText+=`<strong>${esc(labelSaida)}</strong>\n`;
+    prevText+=`${esc(desc)}\n`;
+
+    msgCopyText+=`\n${separador}\n`;
+    msgCopyText+=`📤 APARELHO DE SAÍDA\n`;
+    msgCopyText+=`${separador}\n`;
+    msgCopyText+=`${labelSaida}\n`;
+    msgCopyText+=`${desc}\n`;
+
+    // Entrada
+    prevText+=`\n${separador}\n`;
+    prevText+=`📥 <strong>APARELHO DE ENTRADA</strong>\n`;
+    prevText+=`${separador}\n`;
+    linhasEntradaHtml.forEach(l=>{prevText+=`${l}\n`;});
+
+    msgCopyText+=`\n${separador}\n`;
+    msgCopyText+=`📥 APARELHO DE ENTRADA\n`;
+    msgCopyText+=`${separador}\n`;
+    linhasEntrada.forEach(l=>{msgCopyText+=`${l}\n`;});
+
+    // Pagamento
+    if(temPreco){
+      prevText+=`\n${separador}\n`;
+      prevText+=`💳 <strong>PAGAMENTO DA DIFERENÇA</strong>\n`;
+      prevText+=`${separador}\n`;
+      msgCopyText+=`\n${separador}\n`;
+      msgCopyText+=`💳 PAGAMENTO DA DIFERENÇA\n`;
+      msgCopyText+=`${separador}\n`;
+      if(diff===0){
+        prevText+=`<strong>✅ A troca cobre o valor total!</strong>`;
+        msgCopyText+=`✅ A troca cobre o valor total!`;
+      } else if(!prevPagLines){
+        prevText+=`<span style="color:var(--mu)">← Selecione a forma de pagamento</span>`;
+      } else {
+        prevText+=prevPagLines;
+        msgCopyText+=msgPagLines;
+      }
+    } else {
+      prevText+=`\n<span style="color:var(--mu)">← Informe o preço de venda</span>`;
+    }
+
+  } else {
+    // Sem troca — formato simples
+    prevText+=saudacao?`<strong>${esc(saudacao.trim())}</strong>\n\n`:'';
+    msgCopyText+=saudacao;
+
+    // Loja
+    prevText+=blocoLoja.join('\n')+'\n\n';
+    msgCopyText+=blocoLojaMsg.join('\n')+'\n\n';
+
+    prevText+=`<strong>${esc(labelSaida)}</strong>\n${esc(desc)}\n\n`;
+    msgCopyText+=`${labelSaida}\n${desc}\n\n`;
+    if(!temPreco)     {prevText+=`<span style="color:var(--mu)">← Informe o preço de venda</span>`;}
+    else if(diff===0) {prevText+=`<strong>✅ A troca cobre o valor total!</strong>`;msgCopyText+=`✅ A troca cobre o valor total!`;}
+    else if(!prevPagLines){prevText+=`<span style="color:var(--mu)">← Selecione a forma de pagamento</span>`;}
+    else{prevText+=prevPagLines;msgCopyText+=msgPagLines;}
+  }
+
+  const msgCopy=msgCopyText;
+
+  area.innerHTML=resumoHtml+
+    (warns.length?`<div class="warn">${warns.join('<br>')}</div>`:'')+
+    pagHtml+
+    `<div class="preview">
+      <div class="prev-lbl">PRÉVIA — MENSAGEM PARA O CLIENTE</div>
+      <div class="prev-body">${prevText}</div>
+    </div>
+    <button class="copy-btn" id="copy-btn" onclick="copyMsg()">📋 &nbsp;COPIAR E COLAR NO WHATSAPP</button>`;
+
+  window._msg=msgCopy;
+}
+
+/* Copiar */
+function copyMsg(){
+  const txt=window._msg||'';
+  const ok=()=>{
+    const b=qi('copy-btn');b.classList.add('done');b.innerHTML='✅ &nbsp;COPIADO! COLE NO WHATSAPP';
+    setTimeout(()=>{b.classList.remove('done');b.innerHTML='📋 &nbsp;COPIAR E COLAR NO WHATSAPP';},3500);
+  };
+  if(navigator.clipboard) navigator.clipboard.writeText(txt).then(ok).catch(()=>fb(txt,ok));
+  else fb(txt,ok);
+}
+function fb(txt,ok){
+  const t=document.createElement('textarea');t.value=txt;t.style.cssText='position:fixed;left:-9999px;opacity:0;';
+  document.body.appendChild(t);t.select();document.execCommand('copy');t.remove();ok();
+}
+
+/* Reset */
+function resetAll(){
+  brand='apple';tipo='semi';modo='troca';pag='ambos';dois=false;selChips=new Set();
+  Object.assign(st,{model:null,mem:null,memVenda:null,bat:100,tela:false,cam:false,tam:false,vidro:false,conector:false,flexpower:false,flexvolume:false,flash:false,auricular:false,sensor:false,camfrontc:false});
+  st.cores=new Set(); st.coresCliente=new Set();
+  document.querySelectorAll('.pbtn,.mbtn-troca,.mbtn-venda,.mbtn-cor,.mbtn-cor-cli').forEach(b=>b.classList.remove('on'));
+  ['bb-apple','tb-semi','tb-troca'].forEach(id=>qi(id).classList.add('on'));
+  ['bb-garmin','tb-lacr','tb-simples'].forEach(id=>qi(id).classList.remove('on'));
+  qi('card-tipo').classList.remove('hidden');qi('card-modo').classList.remove('hidden');
+  qi('garmin-note').classList.add('hidden');
+  ['card-model','card-mem','card-bat','card-cond'].forEach(id=>hide(id));
+  qi('sl-bat').value=100;batDisp(100);
+  qi('wrap-chips').style.display='block';
+  qi('sw-2cart').classList.remove('on');qi('config-2cart').classList.add('hidden');
+  qi('wrap-2cart').classList.add('hidden');qi('wrap-entrada').classList.add('hidden');
+  qi('inp-cliente').value='';qi('inp-nome').value='';qi('inp-preco').value='';qi('inp-entrada').value='';
+  ['ambos','avista','parc'].forEach(k=>{const e=qi('tb-'+k);e.classList.remove('on','on2');});
+  qi('tb-ambos').classList.add('on2');
+  buildChips();updateInfoBox();clearResult();
+}
+
+/* Utils */
+function fmt(v){return Number(v).toLocaleString('pt-BR');}
+function brl(v){return 'R$ '+Number(v).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function qi(id){return document.getElementById(id);}
+function show(id){qi(id).classList.remove('hidden');}
+function hide(id){qi(id).classList.add('hidden');}
+function clearResult(){qi('el-empty').classList.remove('hidden');qi('el-result').classList.add('hidden');}
+function onNome(){updateInfoBox();recalc();}
+
+buildChips();
+updateInfoBox();
+buildMemVenda();
+buildCor();
+</script>
+</body>
+</html>
       show('card-bat');show('card-cond');recalc();
     };
     g.appendChild(b);
